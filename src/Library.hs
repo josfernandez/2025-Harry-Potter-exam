@@ -35,6 +35,13 @@ enBuenEstado auto
     | tiempoCarrera auto < 100 = desgasteChasis (desgaste auto) < 20
     | otherwise = desgasteChasis (desgaste auto) < 40 && desgasteRueda (desgaste auto) < 60 
 
+noDaMas :: Auto -> Bool
+noDaMas auto = 
+    (primerasDosLetrasApodo (primerApodo auto) == "La" && desgasteChasis (desgaste auto) > 80)
+    || desgasteRueda (desgaste auto) > 80
 
+primerApodo :: Auto -> String
+primerApodo auto = head (apodo auto)
 
-
+primerasDosLetrasApodo :: String -> String
+primerasDosLetrasApodo auto = take 2 auto -- take n xs es la lista de los n primeros elementos de xs.
