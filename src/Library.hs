@@ -83,4 +83,20 @@ nivelDeChetez auto = (cantidadDeApodos auto) * 20 + cantidadDeCaracteresDeModelo
 cantidadDeCaracteresDeModelo :: Auto -> Number
 cantidadDeCaracteresDeModelo auto = length (modelo auto)
 
--- funcion f) 
+-- funcion f) supercalifragilisticaespialidosa
+
+capacidadSuperCali :: Auto -> Number
+capacidadSuperCali auto = cantLetrasPrimerApodo auto
+
+cantLetrasPrimerApodo :: Auto -> Number
+cantLetrasPrimerApodo auto = length (primerApodo auto)
+
+-- funcion g) riesgoAuto
+riegoDelAuto :: Auto -> Number
+riegoDelAuto auto 
+    | enBuenEstado auto = calcularRiesgo auto
+    | otherwise = 2 * calcularRiesgo auto
+
+calcularRiesgo :: Auto -> Number
+calcularRiesgo auto = (velocidadMaxima auto) * (desgasteRueda (desgaste auto) / 10)
+
