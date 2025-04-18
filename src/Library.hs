@@ -29,12 +29,14 @@ auto = [
 
 -- 2. ESTADO DE SALUD DEL AUTO
 
+-- funcion a) enBuenEstado
 enBuenEstado :: Auto -> Bool
 enBuenEstado auto   
     | marca auto == "Peugeot" = False
     | tiempoCarrera auto < 100 = desgasteChasis (desgaste auto) < 20
     | otherwise = desgasteChasis (desgaste auto) < 40 && desgasteRueda (desgaste auto) < 60 
 
+-- funcion b) noDaMas
 noDaMas :: Auto -> Bool
 noDaMas auto = 
     (primerasDosLetrasApodo (primerApodo auto) == "La" && desgasteChasis (desgaste auto) > 80)
@@ -45,3 +47,40 @@ primerApodo auto = head (apodo auto)
 
 primerasDosLetrasApodo :: String -> String
 primerasDosLetrasApodo auto = take 2 auto -- take n xs es la lista de los n primeros elementos de xs.
+
+-- funcion c) esUnChiche
+
+esUnChiche :: Auto -> Bool
+esUnChiche auto
+    | desgasteChasis (desgaste auto) < 20 && esPar (cantidadDeApodos auto) = True
+    | not (esPar (cantidadDeApodos auto)) && desgasteChasis (desgaste auto) < 50 = True
+    | otherwise = False 
+
+cantidadDeApodos :: Auto -> Number
+cantidadDeApodos auto = length (apodo auto)
+
+esPar :: Number -> Bool
+esPar n = even n
+
+{-
+CON COMPOSICION DE FUNCIONES
+
+esParApodosAuto :: Auto -> Bool
+esParApodosAuto auto = esPar . cantidadDeApodos
+-} 
+
+-- funcion d) esUnaJoya
+
+esUnaJoya :: Auto -> Bool
+esUnaJoya auto = (desgasteChasis (desgaste auto) == 0 ) && (desgasteRueda (desgaste auto) == 0) &&
+ (cantidadDeApodos auto <= 1)
+
+-- funcion e) nivelDeChetez
+
+nivelDeChetez :: Auto -> Number
+nivelDeChetez auto = (cantidadDeApodos auto) * 20 + cantidadDeCaracteresDeModelo auto
+
+cantidadDeCaracteresDeModelo :: Auto -> Number
+cantidadDeCaracteresDeModelo auto = length (modelo auto)
+
+-- funcion f) 
