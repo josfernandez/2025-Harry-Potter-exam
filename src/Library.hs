@@ -100,3 +100,55 @@ riegoDelAuto auto
 calcularRiesgo :: Auto -> Number
 calcularRiesgo auto = (velocidadMaxima auto) * (desgasteRueda (desgaste auto) / 10)
 
+-- 3. MANOS A LA OBRA
+
+-- funcion a) repararAuto
+
+repararAuto :: Auto -> Auto
+repararAuto auto = auto {
+    desgaste = Desgaste {
+        desgasteChasis = desgasteChasis (desgaste auto) * 0.15,
+        desgasteRueda = 0
+    } 
+}
+
+{-
+Sin usar registros se escribiria asi
+
+Auto :: String -> String -> Desgaste -> Number -> Number -> [String] -> Auto
+Desgaste :: Number -> Number -> Desgaste
+
+repararAuto :: Auto -> Auto
+repararAuto auto = Auto
+    (marca auto)
+    (modelo auto)
+    (Desgaste (desgasteChasis (desgaste auto) * 0.15) 0)
+    (velocidadMaxima auto)
+    (tiempoCarrera auto)
+    (apodo auto)
+-}
+
+-- funcion b) aplicarPenalidad
+
+aplicarPenalidad :: Number -> Auto -> Auto
+aplicarPenalidad segundos auto = auto {tiempoCarrera = tiempoCarrera auto + segundos}
+
+-- funcion c) ponerleNitro
+
+ponerleNitro :: Auto -> Auto
+ponerleNitro auto = auto {velocidadMaxima = velocidadMaxima auto * 1.2}
+
+-- funcion d) bautizarElAuto
+
+bautizarElAuto :: String -> Auto -> Auto
+bautizarElAuto nombreBautismo auto = auto {apodo = apodo auto ++ [nombreBautismo]} -- ++ agrega al final de la lista
+
+-- funcion e) llevarAutoADesarmadero
+
+llevarAutoADesarmadero :: String -> String -> Auto -> Auto
+llevarAutoADesarmadero nuevaMarca nuevoModelo auto = auto { 
+    marca = nuevaMarca,
+    modelo = nuevoModelo,
+    apodo = ["Nunca Taxi"]
+}
+
