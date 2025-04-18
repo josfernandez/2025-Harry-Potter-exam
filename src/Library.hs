@@ -152,3 +152,33 @@ llevarAutoADesarmadero nuevaMarca nuevoModelo auto = auto {
     apodo = ["Nunca Taxi"]
 }
 
+-- 4. PISTAS!!!
+
+-- Modelado de tramos
+
+data Tramo
+  = Curva {
+      anguloCurva :: Number,
+      longitudCurva :: Number
+    }
+  | Recto {
+      longitudRecto :: Number
+    }
+  | ZigZag {
+      cambiosDeDireccion :: Number
+    }
+  | Rulo {
+      diametro :: Number
+    }
+
+-- Modelado de Pista
+
+data Pista = Pista {
+    nombre :: String,
+    pais :: String,
+    precioEntrada :: Number,
+    tramos :: [Tramo] 
+}
+
+
+
