@@ -243,7 +243,7 @@ deseoDeMuerte = Rulo {
 
 -- 5. Nivel de Joyez
 
--- a) nivelDeJoyez
+-- a) Nivel de joyez de un grupo de autos
 
 nivelDeJoyez :: [Auto] -> Number
 nivelDeJoyez autos = sum (map joyezIndividual autos)
@@ -254,7 +254,13 @@ joyezIndividual auto
     | esUnaJoya auto = 2
     | otherwise = 0
 
+-- b) Para entendidos de un grupo de autos
 
+paraEntendidos :: [Auto] -> Bool
+paraEntendidos autos = any noCumpleCondicionEntendido autos
+
+noCumpleCondicionEntendido :: Auto -> Bool
+noCumpleCondicionEntendido auto = tiempoCarrera auto > 200 || not (enBuenEstado auto) 
  
 
 
