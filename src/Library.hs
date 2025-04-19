@@ -20,12 +20,18 @@ data Auto = Auto {
 } deriving (Show)
 
 -- CREACION DE AUTOS
-auto = [
-    Auto "Ferrari" "F50" (Desgaste 0 0) 5 0 ["La nave","El fierro","Ferrucho"],
-    Auto "Lamborghini" "Diablo" (Desgaste 7 4) 73 0 ["Lambo","La bestia"],
-    Auto "Fiat" "600" (Desgaste 33 27) 44 0 ["La Bocha","La bolita","Fitito"],
-    Auto "Peugeot" "504" (Desgaste 0 0) 40 0 ["La Bocha","La bolita","El rey del desierto"]
- ]
+
+ferrari :: Auto
+ferrari = Auto "Ferrari" "F50" (Desgaste 0 0) 5 0 ["La nave","El fierro","Ferrucho"]
+
+lamborghini :: Auto
+lamborghini = Auto "Lamborghini" "Diablo" (Desgaste 7 4) 73 0 ["Lambo","La bestia"]
+
+fiat :: Auto
+fiat = Auto "Fiat" "600" (Desgaste 33 27) 44 0 ["La Bocha","La bolita","Fitito"]
+
+peugeot :: Auto
+peugeot = Auto "Peugeot" "504" (Desgaste 0 0) 40 0 ["La Bocha","La bolita","El rey del desierto"] 
 
 -- 2. ESTADO DE SALUD DEL AUTO
 
