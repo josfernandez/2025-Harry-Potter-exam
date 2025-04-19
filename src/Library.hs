@@ -180,5 +180,81 @@ data Pista = Pista {
     tramos :: [Tramo] 
 }
 
+-- creo Instancias del tipo de dato "Tramo" usando el constructor "Curva"
+
+curvaPeligrosa :: Tramo
+curvaPeligrosa = Curva {
+    anguloCurva = 60,
+    longitudCurva = 300
+}
+
+curvaTranca :: Tramo
+curvaTranca = Curva {
+    anguloCurva = 110,
+    longitudCurva = 550
+}
+
+-- Desgaste en ruedas por transitar tramo curvo
+
+
+-- creo Instancias del tipo de dato "Tramo" usando el constructor "Recto"
+
+tramoRectoClassic :: Tramo
+tramoRectoClassic = Recto {
+    longitudRecto = 715    
+}
+
+tramito :: Tramo
+tramito = Recto {
+    longitudRecto = 260    
+}
+
+-- Desgaste en chasis por transitar tramo recto
+
+-- creo Instancias del tipo de dato "Tramo" usando el constructor "ZigZag"
+
+zigZagLoco :: Tramo
+zigZagLoco = ZigZag {
+    cambiosDeDireccion = 5
+}
+
+casiCurva :: Tramo
+casiCurva = ZigZag {
+    cambiosDeDireccion = 1
+}
+
+-- Desgaste en chasis por transitar tramo ZigZag
+-- Desgaste en ruedas por transitar tramo ZigZag
+
+-- creo Instancias del tipo de dato "Tramo" usando el constructor "ZigZag"
+
+ruloClasico :: Tramo
+ruloClasico = Rulo {
+    diametro = 13
+}
+
+deseoDeMuerte :: Tramo
+deseoDeMuerte = Rulo {
+    diametro = 26
+}
+
+-- Desgaste en ruedas por transitar tramo Rulo
+
+
+-- 5. Nivel de Joyez
+
+-- a) nivelDeJoyez
+
+nivelDeJoyez :: [Auto] -> Number
+nivelDeJoyez autos = sum (map joyezIndividual autos)
+
+joyezIndividual :: Auto -> Number
+joyezIndividual auto 
+    | (esUnaJoya auto && tiempoCarrera auto < 50) = 1
+    | esUnaJoya auto = 2
+    | otherwise = 0
+
+
+ 
 
 
