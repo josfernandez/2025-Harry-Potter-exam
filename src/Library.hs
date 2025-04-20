@@ -45,8 +45,7 @@ enBuenEstado auto
 -- funcion b) noDaMas
 noDaMas :: Auto -> Bool
 noDaMas auto = 
-    (primerasDosLetrasApodo (primerApodo auto) == "La" && desgasteChasis (desgaste auto) > 80)
-    || desgasteRueda (desgaste auto) > 80
+    (primerasDosLetrasApodo (primerApodo auto) == "La" && desgasteChasis (desgaste auto) > 80) || desgasteRueda (desgaste auto) > 80
 
 primerApodo :: Auto -> String
 primerApodo auto = head (apodo auto)
@@ -84,7 +83,7 @@ esUnaJoya auto = (desgasteChasis (desgaste auto) == 0 ) && (desgasteRueda (desga
 -- funcion e) nivelDeChetez
 
 nivelDeChetez :: Auto -> Number
-nivelDeChetez auto = (cantidadDeApodos auto) * 20 + cantidadDeCaracteresDeModelo auto
+nivelDeChetez auto = (cantidadDeApodos auto) * 20 * cantidadDeCaracteresDeModelo auto
 
 cantidadDeCaracteresDeModelo :: Auto -> Number
 cantidadDeCaracteresDeModelo auto = length (modelo auto)
@@ -98,8 +97,8 @@ cantLetrasPrimerApodo :: Auto -> Number
 cantLetrasPrimerApodo auto = length (primerApodo auto)
 
 -- funcion g) riesgoAuto
-riegoDelAuto :: Auto -> Number
-riegoDelAuto auto 
+riesgoDelAuto :: Auto -> Number
+riesgoDelAuto auto 
     | enBuenEstado auto = calcularRiesgo auto
     | otherwise = 2 * calcularRiesgo auto
 
@@ -266,7 +265,4 @@ paraEntendidos :: [Auto] -> Bool
 paraEntendidos autos = any noCumpleCondicionEntendido autos
 
 noCumpleCondicionEntendido :: Auto -> Bool
-noCumpleCondicionEntendido auto = tiempoCarrera auto > 200 || not (enBuenEstado auto) 
- 
-
-
+noCumpleCondicionEntendido auto = tiempoCarrera auto > 200 || not (enBuenEstado auto)
