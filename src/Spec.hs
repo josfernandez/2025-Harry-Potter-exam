@@ -107,3 +107,4 @@ correrTests = hspec $ do
        velocidadMaxima (ponerleNitro fiat) `shouldBe` 52.8
 
     it "Ponerle nitro a un auto (20% mas velocidad maxima)" $ do
+        velocidadMaxima (ponerleNitro (Auto "Fiat" "600" (Desgaste 33 27) 0 0 ["La Bocha","La bolita","Fitito"])) `shouldBe` 0
