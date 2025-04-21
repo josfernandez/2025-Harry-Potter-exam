@@ -155,4 +155,16 @@ correrTests = hspec $ do
       tiempoDelAutoEncurva peugeot curvaTranca `shouldBe` 27.5
 
   --Test b
+  describe "Tests de rectas:" $ do
+    it "Transitar un RetroClassic  con un auto marca Ferrari" $ do
+      (desgasteChasis . desgaste . desgasteDelAutoEnRecto ferrari) tramoRectoClassic `shouldBe` 7.15
     
+    it "Transitar una RetroClassic con un auto marca Ferrari" $ do
+      tiempoDelAutoEnRecto ferrari tramoRectoClassic `shouldBe` 11
+
+    it "Transitar un Tramito  con un auto marca Ferrari" $ do
+      (desgasteChasis . desgaste . desgasteDelAutoEnRecto ferrari) tramito `shouldBe` 2.6
+    
+    it "Transitar una Tramito con un auto marca Ferrari" $ do
+      tiempoDelAutoEnRecto ferrari tramito `shouldBe` 4
+

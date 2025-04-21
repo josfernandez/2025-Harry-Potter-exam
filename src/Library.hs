@@ -22,7 +22,7 @@ data Auto = Auto {
 -- CREACION DE AUTOS
 
 ferrari :: Auto
-ferrari = Auto "Ferrari" "F50" (Desgaste 0 0) 5 0 ["La nave","El fierro","Ferrucho"]
+ferrari = Auto "Ferrari" "F50" (Desgaste 0 0) 65 0 ["La nave","El fierro","Ferrucho"]
 
 lamborghini :: Auto
 lamborghini = Auto "Lamborghini" "Diablo" (Desgaste 7 4) 73 0 ["Lambo","La bestia"]
@@ -233,7 +233,22 @@ tramito = Recto {
     longitudRecto = 260    
 }
 
+-- Desgaste por transitar tramo recto
+desgasteEnRecto :: Auto -> Tramo -> Desgaste
+desgasteEnRecto auto (Recto longitud) = Desgaste {desgasteChasis = (desgasteChasis . desgaste) auto + (longitud/100), desgasteRueda = (desgasteRueda. desgaste) auto }
+desgasteEnRecto auto _ = desgaste auto
+
 -- Desgaste en chasis por transitar tramo recto
+desgasteDelAutoEnRecto :: Auto -> Tramo -> Auto
+desgasteDelAutoEnRecto auto recto = auto {desgaste = desgasteEnRecto auto recto }
+
+-- Tiempo que tarda en cruzar la curva
+tiempoEnRecto :: Auto ->Tramo -> Number
+tiempoEnRecto auto (Recto longitud) = longitud / velocidadMaxima auto 
+
+
+tiempoDelAutoEnRecto :: Auto -> Tramo -> Number
+tiempoDelAutoEnRecto auto recto = tiempoCarrera auto {tiempoCarrera = tiempoCarrera auto + tiempoEnRecto auto recto }
 
 -- creo Instancias del tipo de dato "Tramo" usando el constructor "ZigZag"
 
@@ -248,6 +263,7 @@ casiCurva = ZigZag {
 }
 
 -- Desgaste en chasis por transitar tramo ZigZag
+
 -- Desgaste en ruedas por transitar tramo ZigZag
 
 -- creo Instancias del tipo de dato "Tramo" usando el constructor "ZigZag"
