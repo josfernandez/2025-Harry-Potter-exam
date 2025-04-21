@@ -203,8 +203,15 @@ curvaTranca = Curva {
     anguloCurva = 110,
     longitudCurva = 550
 }
-
--- Desgaste por transitar tramo curvo
+{- debatir con el profe.....
+desgasteCurva :: Tramo -> Auto -> Auto
+desgasteCurva curva auto = auto {
+    desgaste = (desgaste auto) {
+        desgasteRueda = 3 * longitudCurva curva / anguloCurva curva
+    },
+    tiempoCarrera = tiempoCarrera auto + longitudCurva curva / (velocidadMaxima auto / 2)
+}
+-}
 desgasteEnCurva :: Auto -> Tramo -> Desgaste
 desgasteEnCurva auto (Curva angulo longitud) = Desgaste {desgasteChasis = (desgasteChasis . desgaste) auto, desgasteRueda = (desgasteRueda. desgaste) auto + 3 * longitud / angulo }
 desgasteEnCurva auto _ = desgaste auto
