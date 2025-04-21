@@ -33,10 +33,6 @@ fiat = Auto "Fiat" "600" (Desgaste 33 27) 44 0 ["La Bocha","La bolita","Fitito"]
 peugeot :: Auto
 peugeot = Auto "Peugeot" "504" (Desgaste 0 0) 40 0 ["La Bocha","La bolita","El rey del desierto"] 
 
---Lamborghini sin apodo
-lamborghiniSinApodo :: Auto
-lamborghiniSinApodo = Auto "Lamborghini" "Diablo" (Desgaste 7 4) 73 0 []
-
 
 -- 2. ESTADO DE SALUD DEL AUTO
 
@@ -163,6 +159,10 @@ llevarAutoADesarmadero nuevaMarca nuevoModelo auto = auto {
 }
 
 -- 4. PISTAS!!!
+
+--Lamborghini sin apodo
+lamborghiniSinApodo :: Auto
+lamborghiniSinApodo = Auto "Lamborghini" "Diablo" (Desgaste 7 4) 73 0 []
 
 -- Modelado de tramos
 
