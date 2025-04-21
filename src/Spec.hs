@@ -86,6 +86,9 @@ correrTests = hspec $ do
     it "Un auto de marca Fiat" $ do
       riesgoDelAuto fiat `shouldBe` 237.6
 
+
+--TESt 3) Manos a la obra
+
   -- Test a. Reparar auto
     it "Reparar un auto de marca Fiat" $ do
       desgasteChasis (desgaste (repararAuto fiat)) `shouldBe` 4.95
@@ -108,3 +111,48 @@ correrTests = hspec $ do
 
     it "Ponerle nitro a un auto (20% mas velocidad maxima)" $ do
         velocidadMaxima (ponerleNitro (Auto "Fiat" "600" (Desgaste 33 27) 0 0 ["La Bocha","La bolita","Fitito"])) `shouldBe` 0
+
+  -- Test d. Bautizar un auto
+  describe "Tests para bautizar un auto:" $ do
+    it "Bautizar 'El diablo' a un auto marca Lamborghini" $ do
+      (apodo . bautizarElAuto "El diablo") lamborghini `shouldContain` ["El diablo"]
+
+    it "Bautizar 'El diablo' a un auto marca Lamborghini sin apodos" $ do
+      (apodo . bautizarElAuto "El diablo") lamborghiniSinApodo `shouldBe` ["El diablo"]
+
+  -- Test e. Llevar un auto a un desarmadero
+  describe "Tests de desarmader:" $ do
+    it "Llevar a un desarmadero a un auto marca Fiat para cambiar por marca 'Tesla' modelo 'X'" $ do 
+     (marca . llevarAutoADesarmadero "Tesla" "X") fiat `shouldBe` "Tesla"
+
+    it "Llevar a un desarmadero a un auto marca Fiat para cambiar por marca 'Tesla' modelo 'X'" $ do 
+     (modelo . llevarAutoADesarmadero "Tesla" "X") fiat `shouldBe` "X"
+    
+    it "Llevar a un desarmadero a un auto marca Fiat para cambiar por marca 'Tesla' modelo 'X'" $ do 
+     (apodo . llevarAutoADesarmadero "Tesla" "X") fiat `shouldBe` ["Nunca Taxi"]
+
+
+-- Test 4) Pistas
+
+  --Test a
+  describe "Tests de curvas peligrosas:" $ do
+    it "Transitar una curva peligrosa  con un auto marca Ferrari" $ do
+      (desgasteRueda . desgaste . desgasteDelAutoEnCurva ferrari) curvaPeligrosa `shouldBe` 15
+
+    it "Transitar una curva peligrosa  con un auto marca Ferrari" $ do
+      (desgasteChasis . desgaste . desgasteDelAutoEnCurva ferrari) curvaPeligrosa `shouldBe` 0
+
+    it "Transitar una curva peligrosa  con un auto marca peouget" $ do
+      tiempoDelAutoEncurva peugeot curvaPeligrosa `shouldBe` 15
+
+    it "Transitar una curva tranca  con un auto marca Ferrari" $ do
+      (desgasteRueda . desgaste . desgasteDelAutoEnCurva ferrari) curvaTranca `shouldBe` 15
+
+    it "Transitar una curva tranca  con un auto marca Ferrari" $ do
+      (desgasteChasis . desgaste . desgasteDelAutoEnCurva ferrari) curvaTranca `shouldBe` 0
+    
+    it "Transitar una curva tranca  con un auto marca peouget" $ do
+      tiempoDelAutoEncurva peugeot curvaTranca `shouldBe` 27.5
+
+  --Test b
+    

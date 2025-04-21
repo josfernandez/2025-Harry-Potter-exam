@@ -8,7 +8,7 @@ doble numero = numero + numero
 data Desgaste = Desgaste {
     desgasteChasis :: Number,
     desgasteRueda :: Number
-} deriving (Show)
+} deriving (Show, Eq)
 
 data Auto = Auto {
     marca :: String,
@@ -17,7 +17,7 @@ data Auto = Auto {
     velocidadMaxima :: Number, -- en m/s
     tiempoCarrera :: Number,   -- en segundos
     apodo :: [String]
-} deriving (Show)
+} deriving (Show, Eq)
 
 -- CREACION DE AUTOS
 
@@ -32,6 +32,11 @@ fiat = Auto "Fiat" "600" (Desgaste 33 27) 44 0 ["La Bocha","La bolita","Fitito"]
 
 peugeot :: Auto
 peugeot = Auto "Peugeot" "504" (Desgaste 0 0) 40 0 ["La Bocha","La bolita","El rey del desierto"] 
+
+--Lamborghini sin apodo
+lamborghiniSinApodo :: Auto
+lamborghiniSinApodo = Auto "Lamborghini" "Diablo" (Desgaste 7 4) 73 0 []
+
 
 -- 2. ESTADO DE SALUD DEL AUTO
 
@@ -199,8 +204,22 @@ curvaTranca = Curva {
     longitudCurva = 550
 }
 
--- Desgaste en ruedas por transitar tramo curvo
+-- Desgaste por transitar tramo curvo
+desgasteEnCurva :: Auto -> Tramo -> Desgaste
+desgasteEnCurva auto (Curva angulo longitud) = Desgaste {desgasteChasis = (desgasteChasis . desgaste) auto, desgasteRueda = (desgasteRueda. desgaste) auto + 3 * longitud / angulo }
+desgasteEnCurva auto _ = desgaste auto
 
+-- Desgaste en ruedas por transitar tramo curvo
+desgasteDelAutoEnCurva :: Auto -> Tramo -> Auto
+desgasteDelAutoEnCurva auto curva = auto {desgaste = desgasteEnCurva auto curva }
+
+-- Tiempo que tarda en cruzar la curva
+tiempoEnCurva :: Auto ->Tramo -> Number
+tiempoEnCurva auto (Curva angulo longitud) = longitud / (velocidadMaxima auto / 2)
+
+
+tiempoDelAutoEncurva :: Auto -> Tramo -> Number
+tiempoDelAutoEncurva auto curva = tiempoCarrera auto {tiempoCarrera = tiempoCarrera auto + tiempoEnCurva auto curva }
 
 -- creo Instancias del tipo de dato "Tramo" usando el constructor "Recto"
 
