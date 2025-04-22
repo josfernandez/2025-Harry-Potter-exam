@@ -73,8 +73,8 @@ correrTests = hspec $ do
     it "Auto Marca Ferrari con desgaste de ruedas 20 y chasis 90" $ do
       noDaMas (Auto "Ferrari" "F50" (Desgaste 90 20) 5 0 ["La nave","El fierro","Ferrucho"]) `shouldBe` True
 
-    it "Auto Marca Ferrari con desgaste de ruedas 90 y chasis 20" $ do
-      noDaMas (Auto "Ferrari" "F50" (Desgaste 20 90) 5 0 ["La nave","El fierro","Ferrucho"]) `shouldBe` False
+    it "Auto Marca Ferrari con desgaste de ruedas 65 y chasis 20" $ do
+      noDaMas (Auto "Ferrari" "F50" (Desgaste 20 65) 5 0 ["La nave","El fierro","Ferrucho"]) `shouldBe` False
 
     it "Auto Marca Lamborghini con desgaste de ruedas 90 y chasis 20" $ do
       noDaMas (Auto "Lamborghini" "Diablo" (Desgaste 20 90) 73 0 ["Lambo","La bestia"]) `shouldBe` True
