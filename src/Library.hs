@@ -332,7 +332,7 @@ joyezIndividual auto
 -- b) Para entendidos de un grupo de autos
 
 paraEntendidos :: [Auto] -> Bool
-paraEntendidos autos = all noCumpleCondicionEntendido autos
+paraEntendidos autos = all cumpleCondicionEntendido autos
 
-noCumpleCondicionEntendido :: Auto -> Bool
-noCumpleCondicionEntendido auto = tiempoCarrera auto <= 200 && enBuenEstado auto
+cumpleCondicionEntendido :: Auto -> Bool
+cumpleCondicionEntendido auto = tiempoCarrera auto <= 200 && enBuenEstado auto
