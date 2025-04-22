@@ -3,6 +3,42 @@ import PdePreludat
 import Library
 import Test.Hspec
 
+ferrari2 :: Auto
+ferrari2 = Auto "Ferrari" "F50" (Desgaste 0 0) 49 0 ["La nave","El fierro","Ferrucho"]
+
+peugeot2 :: Auto
+peugeot2 = Auto "Peugeot" "504" (Desgaste 0 0) 49 0 ["La Bocha","La bolita","El rey del desierto"] 
+
+peugeot3 :: Auto
+peugeot3 = Auto "Peugeot" "504" (Desgaste 0 0) 50 0 ["La Bocha","La bolita","El rey del desierto"] 
+
+autos :: [Auto]
+autos = [peugeot3, peugeot2, ferrari2]
+
+-- TEST de nivel de Joyes
+ferrariTiempo201 :: Auto
+ferrariTiempo201 = Auto "Ferrari" "F50" (Desgaste 0 0) 49 201 ["La nave","El fierro","Ferrucho"]
+
+ferrariTiempo200 :: Auto
+ferrariTiempo200 = Auto "Ferrari" "F50" (Desgaste 0 0) 49 200 ["La nave","El fierro","Ferrucho"]
+
+peugeotTiempo200 :: Auto
+peugeotTiempo200 = Auto "Peugeot" "504" (Desgaste 0 0) 49 200 ["La Bocha","La bolita","El rey del desierto"] 
+
+lamborghiniTiempo200 :: Auto
+lamborghiniTiempo200 = Auto "Lamborghini" "Diablo" (Desgaste 7 4) 73 200 ["Lambo","La bestia"]
+
+--Conjunto de autos
+ferraris :: [Auto]
+ferraris = [ferrariTiempo201, ferrariTiempo200]
+
+ferrariPeugeot :: [Auto]
+ferrariPeugeot = [ferrariTiempo200, peugeotTiempo200]
+
+ferrariLambo :: [Auto]
+ferrariLambo = [lamborghiniTiempo200, ferrariTiempo200]
+
+
 correrTests :: IO ()
 
 correrTests = hspec $ do
@@ -162,9 +198,67 @@ correrTests = hspec $ do
     it "Transitar una RetroClassic con un auto marca Ferrari" $ do
       tiempoDelAutoEnRecto ferrari tramoRectoClassic `shouldBe` 11
 
-    it "Transitar un Tramito  con un auto marca Ferrari" $ do
+    it "Transitar un Tramito con un auto marca Ferrari" $ do
       (desgasteChasis . desgaste . desgasteDelAutoEnRecto ferrari) tramito `shouldBe` 2.6
     
     it "Transitar una Tramito con un auto marca Ferrari" $ do
       tiempoDelAutoEnRecto ferrari tramito `shouldBe` 4
 
+  --Test c
+  describe "Tests de zigZagLoco :" $ do
+    it "Desgaste del chasis en un zigZagLoco con un auto marca Ferrari" $ do
+      (desgasteChasis . desgaste . desgasteDelAutoEnZigZag ferrari) zigZagLoco `shouldBe` 5
+    
+    it "Desgaste del ruedas en  zigZagLoco con un auto marca Ferrari" $ do
+      (desgasteRueda . desgaste . desgasteDelAutoEnZigZag ferrari) zigZagLoco `shouldBe` 32.5
+    
+    it "El tiempo en pista en zigZagLoco con un auto marca Ferrari" $ do
+      tiempoDelAutoEnZigZag ferrari zigZagLoco `shouldBe` 15
+    
+    it "Desgaste del chasis en un casiCurva con un auto marca Ferrari" $ do
+      (desgasteChasis . desgaste . desgasteDelAutoEnZigZag ferrari) casiCurva `shouldBe` 5
+    
+    it "Desgaste de ruedas en  casiCurva con un auto marca Ferrari" $ do
+      (desgasteRueda . desgaste . desgasteDelAutoEnZigZag ferrari) casiCurva `shouldBe` 6.5
+    
+    it "El tiempo en pista en casiCurva con un auto marca Ferrari" $ do
+      tiempoDelAutoEnZigZag ferrari casiCurva `shouldBe` 3
+  
+  --Test d    
+  describe "Tests de Rulo :" $ do
+    it "Desgaste del chasis en un ruloClasico con un auto marca Ferrari" $ do
+      (desgasteChasis . desgaste . desgasteDelAutoEnRulo ferrari) ruloClasico `shouldBe` 0
+    
+    it "Desgaste de ruedas en  ruloClasico con un auto marca Ferrari" $ do
+      (desgasteRueda . desgaste . desgasteDelAutoEnRulo ferrari) ruloClasico `shouldBe` 19.5
+    
+    it "El tiempo en pista en ruloClasico con un auto marca Ferrari" $ do
+      tiempoDelAutoEnRulo ferrari ruloClasico `shouldBe` 1
+    
+    it "Desgaste del chasis en un deseoDeMuerte con un auto marca Ferrari" $ do
+      (desgasteChasis . desgaste . desgasteDelAutoEnRulo ferrari) deseoDeMuerte `shouldBe` 0
+    
+    it "Desgaste de ruedas en  deseoDeMuerte con un auto marca Ferrari" $ do
+      (desgasteRueda . desgaste . desgasteDelAutoEnRulo ferrari) deseoDeMuerte `shouldBe` 39
+    
+    it "El tiempo en pista en deseoDeMuerte con un auto marca Ferrari" $ do
+      tiempoDelAutoEnRulo ferrari deseoDeMuerte `shouldBe` 2
+
+-- Test 5) Nivel de Joyez
+
+  describe "Tests de nivel de joyez :" $ do
+    it "Probamos el nivel de joyez de 3 autos" $ do
+      nivelDeJoyez autos `shouldBe` 3
+
+  describe "Tests de paraEntendidos :" $ do
+    it "Probamos el para entendidos con ferraris " $ do
+      paraEntendidos ferraris `shouldBe` False
+
+    it "Probamos el para entendidos con ferrari y peugeot" $ do
+      paraEntendidos ferrariPeugeot `shouldBe` False
+
+    it "Probamos el para entendidos en ferrari y lamborghini " $ do
+      paraEntendidos ferrariLambo `shouldBe` True
+    
+
+  

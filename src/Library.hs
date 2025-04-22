@@ -269,9 +269,22 @@ casiCurva = ZigZag {
     cambiosDeDireccion = 1
 }
 
--- Desgaste en chasis por transitar tramo ZigZag
+-- Desgaste por transitar tramo ZigZag
+desgasteEnZigZag :: Auto -> Tramo -> Desgaste
+desgasteEnZigZag auto (ZigZag cambiosDeDireccion) = Desgaste {desgasteChasis = (desgasteChasis . desgaste) auto + 5, desgasteRueda = (desgasteRueda. desgaste) auto + velocidadMaxima auto * (cambiosDeDireccion/10)  }
+desgasteEnZigZag auto _ = desgaste auto
 
--- Desgaste en ruedas por transitar tramo ZigZag
+-- Desgaste en chasis por transitar tramo ZigZag
+desgasteDelAutoEnZigZag :: Auto -> Tramo -> Auto
+desgasteDelAutoEnZigZag auto zigZag = auto {desgaste = desgasteEnZigZag auto zigZag }
+
+-- Tiempo que tarda en cruzar la ZigZag
+tiempoEnZigZag :: Auto ->Tramo -> Number
+tiempoEnZigZag auto (ZigZag cambiosDeDireccion) = cambiosDeDireccion * 3 
+
+
+tiempoDelAutoEnZigZag :: Auto -> Tramo -> Number
+tiempoDelAutoEnZigZag auto zigZag = tiempoCarrera auto {tiempoCarrera = tiempoCarrera auto + tiempoEnZigZag auto zigZag }
 
 -- creo Instancias del tipo de dato "Tramo" usando el constructor "ZigZag"
 
@@ -285,7 +298,22 @@ deseoDeMuerte = Rulo {
     diametro = 26
 }
 
--- Desgaste en ruedas por transitar tramo Rulo
+-- Desgaste por transitar tramo Rulo
+desgasteEnRulo :: Auto -> Tramo -> Desgaste
+desgasteEnRulo auto (Rulo diametro) = Desgaste {desgasteChasis = (desgasteChasis . desgaste) auto , desgasteRueda = (desgasteRueda. desgaste) auto + diametro * 1.5}
+desgasteEnRulo auto _ = desgaste auto
+
+-- Desgaste en chasis por transitar tramo Rulo
+desgasteDelAutoEnRulo :: Auto -> Tramo -> Auto
+desgasteDelAutoEnRulo auto rulo = auto {desgaste = desgasteEnRulo auto rulo }
+
+-- Tiempo que tarda en cruzar la ZigZag
+tiempoEnRulo :: Auto ->Tramo -> Number
+tiempoEnRulo auto (Rulo diametro) = 5 * diametro / velocidadMaxima auto
+
+
+tiempoDelAutoEnRulo :: Auto -> Tramo -> Number
+tiempoDelAutoEnRulo auto rulo = tiempoCarrera auto {tiempoCarrera = tiempoCarrera auto + tiempoEnRulo auto rulo }
 
 
 -- 5. Nivel de Joyez
@@ -297,14 +325,14 @@ nivelDeJoyez autos = sum (map joyezIndividual autos)
 
 joyezIndividual :: Auto -> Number
 joyezIndividual auto 
-    | (esUnaJoya auto && tiempoCarrera auto < 50) = 1
+    | tiempoCarrera auto < 50 = 1
     | esUnaJoya auto = 2
     | otherwise = 0
 
 -- b) Para entendidos de un grupo de autos
 
 paraEntendidos :: [Auto] -> Bool
-paraEntendidos autos = any noCumpleCondicionEntendido autos
+paraEntendidos autos = all noCumpleCondicionEntendido autos
 
 noCumpleCondicionEntendido :: Auto -> Bool
-noCumpleCondicionEntendido auto = tiempoCarrera auto > 200 || not (enBuenEstado auto)
+noCumpleCondicionEntendido auto = tiempoCarrera auto <= 200 && enBuenEstado auto
