@@ -145,157 +145,73 @@ llevarAutoADesarmadero nuevaMarca nuevoModelo auto = auto {
 
 -- 4. PISTAS!!!
 
---Lamborghini sin apodo
-lamborghiniSinApodo :: Auto
-lamborghiniSinApodo = Auto "Lamborghini" "Diablo" (Desgaste 7 4) 73 0 []
+type Tramo = Auto -> Auto
 
--- Modelado de tramos
+-- Modelo de Curva
 
-data Tramo = Curva {
-    anguloCurva :: Number,
-    longitudCurva :: Number
-} | Recto {
-    longitudRecto :: Number
-} | ZigZag {
-    cambiosDeDireccion :: Number
-} | Rulo {
-    diametro :: Number
+curva :: Number -> Number -> Tramo
+curva angulo longitud auto = auto {
+  desgaste = (desgaste auto) {
+    desgasteRueda = desgasteDeRuedaAuto auto + 3 * longitud / angulo
+  },
+  tiempoCarrera = tiempoCarrera auto + longitud / (velocidadMaxima auto / 2)
 }
-
--- Modelado de Pista
-
-data Pista = Pista {
-    nombre :: String,
-    pais :: String,
-    precioEntrada :: Number,
-    tramos :: [Tramo] 
-}
-
--- creo Instancias del tipo de dato "Tramo" usando el constructor "Curva"
 
 curvaPeligrosa :: Tramo
-curvaPeligrosa = Curva {
-    anguloCurva = 60,
-    longitudCurva = 300
-}
+curvaPeligrosa = curva 60 300
 
 curvaTranca :: Tramo
-curvaTranca = Curva {
-    anguloCurva = 110,
-    longitudCurva = 550
+curvaTranca = curva 110 550
+
+-- Modelo de Recta
+
+recta :: Number -> Tramo
+recta longitud auto = auto {
+  desgaste = (desgaste auto) {
+    desgasteChasis = desgasteDeChasisAuto auto + longitud / 100
+  },
+  tiempoCarrera = tiempoCarrera auto + longitud / velocidadMaxima auto
 }
-{- debatir con el profe.....
-desgasteCurva :: Tramo -> Auto -> Auto
-desgasteCurva curva auto = auto {
-    desgaste = (desgaste auto) {
-        desgasteRueda = 3 * longitudCurva curva / anguloCurva curva
-    },
-    tiempoCarrera = tiempoCarrera auto + longitudCurva curva / (velocidadMaxima auto / 2)
-}
--}
-desgasteEnCurva :: Auto -> Tramo -> Desgaste
-desgasteEnCurva auto (Curva angulo longitud) = Desgaste {desgasteChasis = (desgasteChasis . desgaste) auto, desgasteRueda = (desgasteRueda. desgaste) auto + 3 * longitud / angulo }
-desgasteEnCurva auto _ = desgaste auto
-
--- Desgaste en ruedas por transitar tramo curvo
-desgasteDelAutoEnCurva :: Auto -> Tramo -> Auto
-desgasteDelAutoEnCurva auto curva = auto {desgaste = desgasteEnCurva auto curva }
-
--- Tiempo que tarda en cruzar la curva
-tiempoEnCurva :: Auto ->Tramo -> Number
-tiempoEnCurva auto (Curva angulo longitud) = longitud / (velocidadMaxima auto / 2)
-
-
-tiempoDelAutoEncurva :: Auto -> Tramo -> Number
-tiempoDelAutoEncurva auto curva = tiempoCarrera auto {tiempoCarrera = tiempoCarrera auto + tiempoEnCurva auto curva }
-
--- creo Instancias del tipo de dato "Tramo" usando el constructor "Recto"
 
 tramoRectoClassic :: Tramo
-tramoRectoClassic = Recto {
-    longitudRecto = 715    
-}
+tramoRectoClassic = recta 715
 
 tramito :: Tramo
-tramito = Recto {
-    longitudRecto = 260    
+tramito = recta 260
+
+-- Modelo Zig Zag
+
+zigzag :: Number -> Tramo
+zigzag cambios auto = auto {
+  desgaste = (desgaste auto) {
+    desgasteChasis = desgasteDeChasisAuto auto + 5,
+    desgasteRueda = desgasteDeRuedaAuto auto + (velocidadMaxima auto * cambios / 10)
+  },
+  tiempoCarrera = tiempoCarrera auto + cambios * 3
 }
-
--- Desgaste por transitar tramo recto
-desgasteEnRecto :: Auto -> Tramo -> Desgaste
-desgasteEnRecto auto (Recto longitud) = Desgaste {desgasteChasis = (desgasteChasis . desgaste) auto + (longitud/100), desgasteRueda = (desgasteRueda. desgaste) auto }
-desgasteEnRecto auto _ = desgaste auto
-
--- Desgaste en chasis por transitar tramo recto
-desgasteDelAutoEnRecto :: Auto -> Tramo -> Auto
-desgasteDelAutoEnRecto auto recto = auto {desgaste = desgasteEnRecto auto recto }
-
--- Tiempo que tarda en cruzar la curva
-tiempoEnRecto :: Auto ->Tramo -> Number
-tiempoEnRecto auto (Recto longitud) = longitud / velocidadMaxima auto 
-
-
-tiempoDelAutoEnRecto :: Auto -> Tramo -> Number
-tiempoDelAutoEnRecto auto recto = tiempoCarrera auto {tiempoCarrera = tiempoCarrera auto + tiempoEnRecto auto recto }
-
--- creo Instancias del tipo de dato "Tramo" usando el constructor "ZigZag"
 
 zigZagLoco :: Tramo
-zigZagLoco = ZigZag {
-    cambiosDeDireccion = 5
-}
+zigZagLoco = zigzag 5
 
 casiCurva :: Tramo
-casiCurva = ZigZag {
-    cambiosDeDireccion = 1
+casiCurva = zigzag 1
+
+
+-- Modelo Rulo
+
+rulo :: Number -> Tramo
+rulo diametro auto = auto {
+  desgaste = (desgaste auto) {
+    desgasteRueda = desgasteDeRuedaAuto auto + diametro * 1.5
+  },
+  tiempoCarrera = tiempoCarrera auto + (5 * diametro) / velocidadMaxima auto
 }
-
--- Desgaste por transitar tramo ZigZag
-desgasteEnZigZag :: Auto -> Tramo -> Desgaste
-desgasteEnZigZag auto (ZigZag cambiosDeDireccion) = Desgaste {desgasteChasis = (desgasteChasis . desgaste) auto + 5, desgasteRueda = (desgasteRueda. desgaste) auto + velocidadMaxima auto * (cambiosDeDireccion/10)  }
-desgasteEnZigZag auto _ = desgaste auto
-
--- Desgaste en chasis por transitar tramo ZigZag
-desgasteDelAutoEnZigZag :: Auto -> Tramo -> Auto
-desgasteDelAutoEnZigZag auto zigZag = auto {desgaste = desgasteEnZigZag auto zigZag }
-
--- Tiempo que tarda en cruzar la ZigZag
-tiempoEnZigZag :: Auto ->Tramo -> Number
-tiempoEnZigZag auto (ZigZag cambiosDeDireccion) = cambiosDeDireccion * 3 
-
-
-tiempoDelAutoEnZigZag :: Auto -> Tramo -> Number
-tiempoDelAutoEnZigZag auto zigZag = tiempoCarrera auto {tiempoCarrera = tiempoCarrera auto + tiempoEnZigZag auto zigZag }
-
--- creo Instancias del tipo de dato "Tramo" usando el constructor "ZigZag"
 
 ruloClasico :: Tramo
-ruloClasico = Rulo {
-    diametro = 13
-}
+ruloClasico = rulo 13
 
 deseoDeMuerte :: Tramo
-deseoDeMuerte = Rulo {
-    diametro = 26
-}
-
--- Desgaste por transitar tramo Rulo
-desgasteEnRulo :: Auto -> Tramo -> Desgaste
-desgasteEnRulo auto (Rulo diametro) = Desgaste {desgasteChasis = (desgasteChasis . desgaste) auto , desgasteRueda = (desgasteRueda. desgaste) auto + diametro * 1.5}
-desgasteEnRulo auto _ = desgaste auto
-
--- Desgaste en chasis por transitar tramo Rulo
-desgasteDelAutoEnRulo :: Auto -> Tramo -> Auto
-desgasteDelAutoEnRulo auto rulo = auto {desgaste = desgasteEnRulo auto rulo }
-
--- Tiempo que tarda en cruzar la ZigZag
-tiempoEnRulo :: Auto ->Tramo -> Number
-tiempoEnRulo auto (Rulo diametro) = 5 * diametro / velocidadMaxima auto
-
-
-tiempoDelAutoEnRulo :: Auto -> Tramo -> Number
-tiempoDelAutoEnRulo auto rulo = tiempoCarrera auto {tiempoCarrera = tiempoCarrera auto + tiempoEnRulo auto rulo }
-
+deseoDeMuerte = rulo 26
 
 -- 5. Nivel de Joyez
 
