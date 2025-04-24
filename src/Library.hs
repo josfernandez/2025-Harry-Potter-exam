@@ -145,6 +145,13 @@ llevarAutoADesarmadero nuevaMarca nuevoModelo auto = auto {
 
 -- 4. PISTAS!!!
 
+data Pista = Pista {
+    nombre :: String,
+    pais :: String,
+    precioEntrada :: Number,
+    tramos :: [Tramo] 
+}
+
 type Tramo = Auto -> Auto
 
 -- Modelo de Curva
