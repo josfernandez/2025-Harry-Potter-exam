@@ -49,11 +49,11 @@ correrTests = hspec $ do
 -- Test 2) ESTADO DE SALUD
 
 -- Test a. En buen estado
-  describe "Tests para determinar el Buen Estado de un auto:" $ do
+  describe "Tests para determinar si una auto esta en buen estado:" $ do
     it "Auto marca peugeot no esta en buen estado" $ do
       enBuenEstado peugeot `shouldBe` False
 
-    it "Auto Lamborghini con 99s y chasis 7 está en buen estado" $
+    it "Auto con tiempo en pista < 100 y desgaste de chasis < 20 esta en buen estado" $
       enBuenEstado (Auto "Lamborghini" "" (Desgaste 7 0) 0 99 []) `shouldBe` True
 
     it "Auto Fiat con 99s y desgaste de chasis 33 no está en buen estado" $

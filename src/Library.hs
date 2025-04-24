@@ -38,47 +38,48 @@ peugeot = Auto "Peugeot" "504" (Desgaste 0 0) 40 0 ["La Bocha","La bolita","El r
 
 -- funcion a) enBuenEstado
 enBuenEstado :: Auto -> Bool
+enBuenEstado Auto{marca = "Peugeot"} = False
 enBuenEstado auto   
-    | marca auto == "Peugeot" = False
-    | tiempoCarrera auto < 100 = desgasteChasis (desgaste auto) < 20
-    | otherwise = desgasteChasis (desgaste auto) < 40 && desgasteRueda (desgaste auto) < 60 
+    | tiempoCarrera auto < 100 = desgasteDeChasisAuto auto < 20
+    | otherwise = desgasteDeChasisAuto auto < 40 && desgasteDeRuedaAuto auto < 60 
+
+desgasteDeChasisAuto :: Auto -> Number
+desgasteDeChasisAuto auto = desgasteChasis (desgaste auto)
+
+desgasteDeRuedaAuto :: Auto -> Number
+desgasteDeRuedaAuto auto = desgasteRueda (desgaste auto)
 
 -- funcion b) noDaMas
 noDaMas :: Auto -> Bool
 noDaMas auto = 
-    (primerasDosLetrasApodo (primerApodo auto) == "La" && desgasteChasis (desgaste auto) > 80) || desgasteRueda (desgaste auto) > 80
+    ((empiezaConLa.primerApodo) auto && desgasteDeChasisAuto auto > 80) || desgasteDeRuedaAuto auto > 80
 
 primerApodo :: Auto -> String
 primerApodo auto = head (apodo auto)
 
-primerasDosLetrasApodo :: String -> String
-primerasDosLetrasApodo auto = take 2 auto -- take n xs es la lista de los n primeros elementos de xs.
+empiezaConLa :: String -> Bool
+empiezaConLa auto = take 2 auto == "La" -- take n xs es la lista de los n primeros elementos de xs.
 
 -- funcion c) esUnChiche
 
 esUnChiche :: Auto -> Bool
-esUnChiche auto
-    | desgasteChasis (desgaste auto) < 20 && esPar (cantidadDeApodos auto) = True
-    | not (esPar (cantidadDeApodos auto)) && desgasteChasis (desgaste auto) < 50 = True
-    | otherwise = False 
-
+esUnChiche auto =
+    (esPar cantApodos && desgasteChasis < 20) ||
+    (not (esPar cantApodos) && desgasteChasis < 50)
+  where
+    cantApodos = cantidadDeApodos auto
+    desgasteChasis = desgasteDeChasisAuto auto
+ 
 cantidadDeApodos :: Auto -> Number
-cantidadDeApodos auto = length (apodo auto)
+cantidadDeApodos auto = (length.apodo) auto
 
 esPar :: Number -> Bool
 esPar n = even n
 
-{-
-CON COMPOSICION DE FUNCIONES
-
-esParApodosAuto :: Auto -> Bool
-esParApodosAuto auto = esPar . cantidadDeApodos
--} 
-
 -- funcion d) esUnaJoya
 
 esUnaJoya :: Auto -> Bool
-esUnaJoya auto = (desgasteChasis (desgaste auto) == 0 ) && (desgasteRueda (desgaste auto) == 0) &&
+esUnaJoya auto = (desgasteDeChasisAuto auto == 0 ) && (desgasteDeRuedaAuto auto == 0) &&
  (cantidadDeApodos auto <= 1)
 
 -- funcion e) nivelDeChetez
@@ -87,7 +88,7 @@ nivelDeChetez :: Auto -> Number
 nivelDeChetez auto = (cantidadDeApodos auto) * 20 * cantidadDeCaracteresDeModelo auto
 
 cantidadDeCaracteresDeModelo :: Auto -> Number
-cantidadDeCaracteresDeModelo auto = length (modelo auto)
+cantidadDeCaracteresDeModelo auto = (length.modelo) auto
 
 -- funcion f) supercalifragilisticaespialidosa
 
@@ -95,7 +96,7 @@ capacidadSuperCali :: Auto -> Number
 capacidadSuperCali auto = cantLetrasPrimerApodo auto
 
 cantLetrasPrimerApodo :: Auto -> Number
-cantLetrasPrimerApodo auto = length (primerApodo auto)
+cantLetrasPrimerApodo auto = (length.primerApodo) auto
 
 -- funcion g) riesgoAuto
 riesgoDelAuto :: Auto -> Number
@@ -104,7 +105,7 @@ riesgoDelAuto auto
     | otherwise = 2 * calcularRiesgo auto
 
 calcularRiesgo :: Auto -> Number
-calcularRiesgo auto = (velocidadMaxima auto) * (desgasteRueda (desgaste auto) / 10)
+calcularRiesgo auto = (velocidadMaxima auto) * (desgasteDeRuedaAuto auto / 10)
 
 -- 3. MANOS A LA OBRA
 
@@ -113,26 +114,10 @@ calcularRiesgo auto = (velocidadMaxima auto) * (desgasteRueda (desgaste auto) / 
 repararAuto :: Auto -> Auto
 repararAuto auto = auto {
     desgaste = Desgaste {
-        desgasteChasis = desgasteChasis (desgaste auto) * 0.15,
+        desgasteChasis = desgasteDeChasisAuto auto * 0.15,
         desgasteRueda = 0
     } 
 }
-
-{-
-Sin usar registros se escribiria asi
-
-Auto :: String -> String -> Desgaste -> Number -> Number -> [String] -> Auto
-Desgaste :: Number -> Number -> Desgaste
-
-repararAuto :: Auto -> Auto
-repararAuto auto = Auto
-    (marca auto)
-    (modelo auto)
-    (Desgaste (desgasteChasis (desgaste auto) * 0.15) 0)
-    (velocidadMaxima auto)
-    (tiempoCarrera auto)
-    (apodo auto)
--}
 
 -- funcion b) aplicarPenalidad
 
@@ -166,20 +151,16 @@ lamborghiniSinApodo = Auto "Lamborghini" "Diablo" (Desgaste 7 4) 73 0 []
 
 -- Modelado de tramos
 
-data Tramo
-  = Curva {
-      anguloCurva :: Number,
-      longitudCurva :: Number
-    }
-  | Recto {
-      longitudRecto :: Number
-    }
-  | ZigZag {
-      cambiosDeDireccion :: Number
-    }
-  | Rulo {
-      diametro :: Number
-    }
+data Tramo = Curva {
+    anguloCurva :: Number,
+    longitudCurva :: Number
+} | Recto {
+    longitudRecto :: Number
+} | ZigZag {
+    cambiosDeDireccion :: Number
+} | Rulo {
+    diametro :: Number
+}
 
 -- Modelado de Pista
 
@@ -321,10 +302,10 @@ tiempoDelAutoEnRulo auto rulo = tiempoCarrera auto {tiempoCarrera = tiempoCarrer
 -- a) Nivel de joyez de un grupo de autos
 
 nivelDeJoyez :: [Auto] -> Number
-nivelDeJoyez autos = sum (map joyezIndividual autos)
+nivelDeJoyez = sum . (map joyezIndividual) 
 
 joyezIndividual :: Auto -> Number
-joyezIndividual auto 
+joyezIndividual auto
     | tiempoCarrera auto < 50 = 1
     | esUnaJoya auto = 2
     | otherwise = 0
@@ -332,7 +313,7 @@ joyezIndividual auto
 -- b) Para entendidos de un grupo de autos
 
 paraEntendidos :: [Auto] -> Bool
-paraEntendidos autos = all cumpleCondicionEntendido autos
+paraEntendidos = all cumpleCondicionEntendido
 
 cumpleCondicionEntendido :: Auto -> Bool
 cumpleCondicionEntendido auto = tiempoCarrera auto <= 200 && enBuenEstado auto
