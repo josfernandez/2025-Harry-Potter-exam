@@ -152,17 +152,25 @@ data Pista = Pista {
     tramos :: [Tramo] 
 }
 
-type Tramo = Auto -> Auto
+type Tramo = Auto -> Auto -- recibo un auto y al pasar por el tramo, modifica algo (devuelve Auto')
 
 -- Modelo de Curva
 
 curva :: Number -> Number -> Tramo
 curva angulo longitud auto = auto {
   desgaste = (desgaste auto) {
-    desgasteRueda = desgasteDeRuedaAuto auto + 3 * longitud / angulo
+    desgasteRueda = desgasteDeRuedaAuto auto + desgasteRuedaEnCurva longitud angulo
   },
-  tiempoCarrera = tiempoCarrera auto + longitud / (velocidadMaxima auto / 2)
+  tiempoCarrera = tiempoCarrera auto + aumentoTiempoEnCurva longitud auto
 }
+
+desgasteRuedaEnCurva :: Number -> Number -> Number
+desgasteRuedaEnCurva longitud angulo = 3 * longitud / angulo
+
+aumentoTiempoEnCurva :: Number -> Auto -> Number
+aumentoTiempoEnCurva longitud auto = longitud / (velocidadMaxima auto / 2)
+
+-- Modelo particularidades de curvas solicitadas
 
 curvaPeligrosa :: Tramo
 curvaPeligrosa = curva 60 300
@@ -177,8 +185,13 @@ recta longitud auto = auto {
   desgaste = (desgaste auto) {
     desgasteChasis = desgasteDeChasisAuto auto + longitud / 100
   },
-  tiempoCarrera = tiempoCarrera auto + longitud / velocidadMaxima auto
+  tiempoCarrera = tiempoCarrera auto + aumentoTiempoEnRecta longitud auto 
 }
+
+aumentoTiempoEnRecta :: Number -> Auto -> Number
+aumentoTiempoEnRecta longitud auto = longitud / velocidadMaxima auto
+
+-- Modelo particularidades de rectas solicitadas
 
 tramoRectoClassic :: Tramo
 tramoRectoClassic = recta 715
@@ -192,17 +205,21 @@ zigzag :: Number -> Tramo
 zigzag cambios auto = auto {
   desgaste = (desgaste auto) {
     desgasteChasis = desgasteDeChasisAuto auto + 5,
-    desgasteRueda = desgasteDeRuedaAuto auto + (velocidadMaxima auto * cambios / 10)
+    desgasteRueda = desgasteDeRuedaAuto auto + desgasteRuedaZigZag cambios auto
   },
   tiempoCarrera = tiempoCarrera auto + cambios * 3
 }
+
+desgasteRuedaZigZag :: Number -> Auto -> Number
+desgasteRuedaZigZag cambios auto = (velocidadMaxima auto * cambios / 10)
+
+-- Modelo particularidades de ZigZag solicitadas
 
 zigZagLoco :: Tramo
 zigZagLoco = zigzag 5
 
 casiCurva :: Tramo
 casiCurva = zigzag 1
-
 
 -- Modelo Rulo
 
@@ -211,8 +228,13 @@ rulo diametro auto = auto {
   desgaste = (desgaste auto) {
     desgasteRueda = desgasteDeRuedaAuto auto + diametro * 1.5
   },
-  tiempoCarrera = tiempoCarrera auto + (5 * diametro) / velocidadMaxima auto
+  tiempoCarrera = tiempoCarrera auto + aumentaTiempoEnRulo diametro auto
 }
+
+aumentaTiempoEnRulo :: Number -> Auto -> Number 
+aumentaTiempoEnRulo diametro auto = (5 * diametro) / velocidadMaxima auto
+
+-- Modelo particularidades de Rulos solicitados
 
 ruloClasico :: Tramo
 ruloClasico = rulo 13
