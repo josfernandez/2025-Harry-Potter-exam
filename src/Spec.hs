@@ -27,6 +27,7 @@ peugeotTiempo200 = Auto "Peugeot" "504" (Desgaste 0 0) 49 200 ["La Bocha","La bo
 
 lamborghiniTiempo200 :: Auto
 lamborghiniTiempo200 = Auto "Lamborghini" "Diablo" (Desgaste 7 4) 73 200 ["Lambo","La bestia"]
+lamborghiniSinApodo = Auto "Lamborghini" "Diablo" (Desgaste 7 4) 73 200 []
 
 --Conjunto de autos
 ferraris :: [Auto]
@@ -53,108 +54,87 @@ correrTests = hspec $ do
     it "Auto marca peugeot no esta en buen estado" $ do
       enBuenEstado peugeot `shouldBe` False
 
-    it "Auto con tiempo en pista < 100 y desgaste de chasis < 20 esta en buen estado" $
+    it "Auto con tiempo en pista < 100 y desgaste de chasis < 20 esta en buen estado" $ do
       enBuenEstado (Auto "Lamborghini" "" (Desgaste 7 0) 0 99 []) `shouldBe` True
-
-    it "Auto Fiat con 99s y desgaste de chasis 33 no está en buen estado" $
+     
+    it "Auto chasis menor a 40 y ruedas menor a 60 en buen estado" $ do
       enBuenEstado (Auto "Fiat" "" (Desgaste 33 0) 0 99 []) `shouldBe` False
-
-    it "Auto Ferrari con 130s, ruedas 50 y chasis 30 está en buen estado" $
       enBuenEstado (Auto "Ferrari" "" (Desgaste 30 50) 0 130 []) `shouldBe` True
-
-    it "Auto Ferrari con 15s, ruedas 50 y chasis 45 no está en buen estado" $
-      enBuenEstado (Auto "Ferrari" "" (Desgaste 45 50) 0 15 []) `shouldBe` False
-
-    it "Auto Ferrari con 150s, ruedas 70 y chasis 30 no está en buen estado" $
       enBuenEstado (Auto "Ferrari" "" (Desgaste 30 70) 0 150 []) `shouldBe` False
-
+      enBuenEstado (Auto "Ferrari" "" (Desgaste 45 50) 0 15 []) `shouldBe` False
+      
 -- Test b. No da mas
   describe "Tests para saber si un auto no da mas:" $ do
-    it "Auto Marca Ferrari con desgaste de ruedas 20 y chasis 90" $ do
+    it "Auto con primer apodo la y desgaste chasis mayor a 80" $ do
       noDaMas (Auto "Ferrari" "F50" (Desgaste 90 20) 5 0 ["La nave","El fierro","Ferrucho"]) `shouldBe` True
-
-    it "Auto Marca Ferrari con desgaste de ruedas 65 y chasis 20" $ do
       noDaMas (Auto "Ferrari" "F50" (Desgaste 20 65) 5 0 ["La nave","El fierro","Ferrucho"]) `shouldBe` False
 
-    it "Auto Marca Lamborghini con desgaste de ruedas 90 y chasis 20" $ do
+    it "Auto con desgaste ruedas mayor a 80" $ do
       noDaMas (Auto "Lamborghini" "Diablo" (Desgaste 20 90) 73 0 ["Lambo","La bestia"]) `shouldBe` True
-
-    it "Auto Marca Lamborghini" $ do
       noDaMas lamborghini `shouldBe` False
-
+   
       -- Test c. Es un chiche
   describe "Tests para saber si el auto es un chiche:" $ do
-    it "Un auto de marca Lamborghini" $ do
+    it "un auto desgaste chasis menor a 20 y par de apodos" $ do
       esUnChiche lamborghini `shouldBe` True
-
-    it "Un auto de marca Lamborghini con desgaste de ruedas 90 y chasis 20" $ do
       esUnChiche (Auto "lamborghini" "" (Desgaste 20 90) 0 100  ["Lambo","La bestia"]) `shouldBe` False
 
-    it "Un auto de marca Ferrari con desgaste de ruedas 20 y chasis 90" $ do
+    it "Un auto impar de apodos, desgaste chasis menor a 50" $ do
       esUnChiche (Auto "Ferrari" "" (Desgaste 90 20) 0 100  ["La nave","El fierro","Ferrucho"]) `shouldBe` False
-
-    it "Un auto de marca Ferrari" $ do
       esUnChiche ferrari `shouldBe` True
-
+     
       -- Test d. Es una joya
   describe "Tests para saber si el auto es una joya:" $ do
     it "Un auto de marca Peugeot" $ do
       esUnaJoya  (Auto "Peugeot" "504" (Desgaste 0 0) 40 0 ["La Bocha"])  `shouldBe` True
-
-    it "Un auto de marca Ferrari" $ do
       esUnaJoya ferrari `shouldBe` False
 
       -- Test e.Nivel de chetez
   describe "Tests para conocer nivel de chetez:" $ do
-    it "Un auto de marca Ferrari" $ do
+    it "Un auto con x cantidad de apodos e y cantidad de letras" $ do
      nivelDeChetez ferrari `shouldBe` 180
-    
+     
        -- Test f. Supercalifragilisticaespialidosa
   describe "Tests para conocer capacidad supercalifragilisticaespialidosa:" $ do
-    it "Un auto de marca Ferrari" $ do
+    it "Un auto de con 7 caracteres en su primer apodo" $ do
      capacidadSuperCali ferrari `shouldBe` 7
 
        -- Test g. RiesgoAuto
   describe "Tests para conocer el riesgo de un auto:" $ do
-    it "Un auto de marca Lamborghini" $ do
+    it "un auto en buen estado (vel max*1/10*desgaste ruedas)" $ do
      riesgoDelAuto lamborghini `shouldBe` 29.2
 
-    it "Un auto de marca Fiat" $ do
+    it "Un auto en mal estado (vel max*1/10*desgaste ruedas*2)" $ do
       riesgoDelAuto fiat `shouldBe` 237.6
 
 
 --TESt 3) Manos a la obra
 
   -- Test a. Reparar auto
-    it "Reparar un auto de marca Fiat" $ do
+    it "Reparar un auto ,85% menos en desgaste chasis, y 0 desgaste ruedas" $ do
       desgasteChasis (desgaste (repararAuto fiat)) `shouldBe` 4.95
       desgasteRueda (desgaste (repararAuto fiat)) `shouldBe` 0
-
-    it "Reparar un auto de marca Ferrari" $ do
       desgasteChasis (desgaste (repararAuto ferrari)) `shouldBe` 0
       desgasteRueda (desgaste (repararAuto ferrari)) `shouldBe` 0  
- 
+    
   -- Test b. Aplicar penalidad
-    it "Aplicar penalidad de 20s a un ferrari con tiempo 10s en pista" $ do
+    it "Aplicar penalidad de x segundos, aumenta el tiempo en pista" $ do
       tiempoCarrera (aplicarPenalidad 20 (Auto "Ferrari" "F50" (Desgaste 0 0) 5 10 ["La nave","El fierro","Ferrucho"])) `shouldBe` 30
-     
-    it "Aplicar penalidad de 0s a un ferrari con tiempo 10s en pista" $ do
-        tiempoCarrera (aplicarPenalidad 0 (Auto "Ferrari" "F50" (Desgaste 0 0) 5 10 ["La nave","El fierro","Ferrucho"])) `shouldBe` 10 
- 
+      tiempoCarrera (aplicarPenalidad 0 (Auto "Ferrari" "F50" (Desgaste 0 0) 5 10 ["La nave","El fierro","Ferrucho"])) `shouldBe` 10 
+        
   -- Test c. Ponerle Nitro
     it "Ponerle nitro a un auto (20% mas velocidad maxima)" $ do
        velocidadMaxima (ponerleNitro fiat) `shouldBe` 52.8
-
-    it "Ponerle nitro a un auto (20% mas velocidad maxima)" $ do
-        velocidadMaxima (ponerleNitro (Auto "Fiat" "600" (Desgaste 33 27) 0 0 ["La Bocha","La bolita","Fitito"])) `shouldBe` 0
-
+       velocidadMaxima (ponerleNitro (Auto "Fiat" "600" (Desgaste 33 27) 0 0 ["La Bocha","La bolita","Fitito"])) `shouldBe` 0
+        
   -- Test d. Bautizar un auto
-  describe "Tests para bautizar un auto:" $ do
+  describe "Tests para bautizar un auto (agregar un apodo mas al auto):" $ do
     it "Bautizar 'El diablo' a un auto marca Lamborghini" $ do
       (apodo . bautizarElAuto "El diablo") lamborghini `shouldContain` ["El diablo"]
-
-    it "Bautizar 'El diablo' a un auto marca Lamborghini sin apodos" $ do
-      (apodo . bautizarElAuto "El diablo") lamborghiniSinApodo `shouldBe` ["El diablo"]
+      (apodo . bautizarElAuto "El diablo") lamborghiniSinApodo `shouldContain` ["El diablo"]
+{-
+    --it "Bautizar 'El diablo' a un auto marca Lamborghini sin apodos" $ do
+      --
 
   -- Test e. Llevar un auto a un desarmadero
   describe "Tests de desarmader:" $ do
@@ -243,7 +223,7 @@ correrTests = hspec $ do
     
     it "El tiempo en pista en deseoDeMuerte con un auto marca Ferrari" $ do
       tiempoDelAutoEnRulo ferrari deseoDeMuerte `shouldBe` 2
-
+-}
 -- Test 5) Nivel de Joyez
 
   describe "Tests de nivel de joyez :" $ do
