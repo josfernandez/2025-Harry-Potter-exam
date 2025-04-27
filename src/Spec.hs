@@ -132,22 +132,15 @@ correrTests = hspec $ do
     it "Bautizar 'El diablo' a un auto marca Lamborghini" $ do
       (apodo . bautizarElAuto "El diablo") lamborghini `shouldContain` ["El diablo"]
       (apodo . bautizarElAuto "El diablo") lamborghiniSinApodo `shouldContain` ["El diablo"]
-{-
-    --it "Bautizar 'El diablo' a un auto marca Lamborghini sin apodos" $ do
-      --
 
   -- Test e. Llevar un auto a un desarmadero
-  describe "Tests de desarmader:" $ do
+  describe "Tests de desarmadero (cambia marca y modelo, y pierde apodos, nunca taxi):" $ do
     it "Llevar a un desarmadero a un auto marca Fiat para cambiar por marca 'Tesla' modelo 'X'" $ do 
      (marca . llevarAutoADesarmadero "Tesla" "X") fiat `shouldBe` "Tesla"
-
-    it "Llevar a un desarmadero a un auto marca Fiat para cambiar por marca 'Tesla' modelo 'X'" $ do 
      (modelo . llevarAutoADesarmadero "Tesla" "X") fiat `shouldBe` "X"
-    
-    it "Llevar a un desarmadero a un auto marca Fiat para cambiar por marca 'Tesla' modelo 'X'" $ do 
      (apodo . llevarAutoADesarmadero "Tesla" "X") fiat `shouldBe` ["Nunca Taxi"]
 
-
+{-
 -- Test 4) Pistas
 
   --Test a
