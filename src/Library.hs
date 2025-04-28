@@ -44,10 +44,10 @@ enBuenEstado auto
     | otherwise = desgasteDeChasisAuto auto < 40 && desgasteDeRuedaAuto auto < 60 
 
 desgasteDeChasisAuto :: Auto -> Number
-desgasteDeChasisAuto auto = desgasteChasis (desgaste auto)
+desgasteDeChasisAuto = desgasteChasis . desgaste
 
 desgasteDeRuedaAuto :: Auto -> Number
-desgasteDeRuedaAuto auto = desgasteRueda (desgaste auto)
+desgasteDeRuedaAuto = desgasteRueda . desgaste 
 
 -- funcion b) noDaMas
 noDaMas :: Auto -> Bool
@@ -55,7 +55,7 @@ noDaMas auto =
     ((empiezaConLa.primerApodo) auto && desgasteDeChasisAuto auto > 80) || desgasteDeRuedaAuto auto > 80
 
 primerApodo :: Auto -> String
-primerApodo auto = head (apodo auto)
+primerApodo = head . apodo 
 
 empiezaConLa :: String -> Bool
 empiezaConLa auto = take 2 auto == "La" -- take n xs es la lista de los n primeros elementos de xs.
@@ -71,7 +71,7 @@ esUnChiche auto =
     desgasteChasis = desgasteDeChasisAuto auto
  
 cantidadDeApodos :: Auto -> Number
-cantidadDeApodos auto = (length.apodo) auto
+cantidadDeApodos  = length . apodo
 
 esPar :: Number -> Bool
 esPar n = even n
@@ -88,15 +88,15 @@ nivelDeChetez :: Auto -> Number
 nivelDeChetez auto = (cantidadDeApodos auto) * 20 * cantidadDeCaracteresDeModelo auto
 
 cantidadDeCaracteresDeModelo :: Auto -> Number
-cantidadDeCaracteresDeModelo auto = (length.modelo) auto
+cantidadDeCaracteresDeModelo = (length.modelo) 
 
 -- funcion f) supercalifragilisticaespialidosa
 
 capacidadSuperCali :: Auto -> Number
-capacidadSuperCali auto = cantLetrasPrimerApodo auto
+capacidadSuperCali = cantLetrasPrimerApodo 
 
 cantLetrasPrimerApodo :: Auto -> Number
-cantLetrasPrimerApodo auto = (length.primerApodo) auto
+cantLetrasPrimerApodo = (length.primerApodo)
 
 -- funcion g) riesgoAuto
 riesgoDelAuto :: Auto -> Number
@@ -132,7 +132,9 @@ ponerleNitro auto = auto {velocidadMaxima = velocidadMaxima auto * 1.2}
 -- funcion d) bautizarElAuto
 
 bautizarElAuto :: String -> Auto -> Auto
-bautizarElAuto nombreBautismo auto = auto {apodo = apodo auto ++ [nombreBautismo]} -- ++ agrega al final de la lista
+bautizarElAuto nombreBautismo auto = auto {apodo = apodo auto ++ [nombreBautismo] } 
+
+-- ++ agrega al final de la lista
 
 -- funcion e) llevarAutoADesarmadero
 
@@ -155,6 +157,14 @@ data Pista = Pista {
 type Tramo = Auto -> Auto -- recibo un auto y al pasar por el tramo, modifica algo (devuelve Auto')
 
 -- Modelo de Curva
+
+--Desgaste del auto que paso una CurvaPeligrosa
+desgasteDelAutoEnCurvaPeligrosa :: Auto -> Desgaste
+desgasteDelAutoEnCurvaPeligrosa = desgaste . curvaPeligrosa
+
+--Desgaste del auto que paso una CurvaTranca
+desgasteDelAutoEnCurvaTranca :: Auto -> Desgaste
+desgasteDelAutoEnCurvaTranca = desgaste . curvaTranca
 
 curva :: Number -> Number -> Tramo
 curva angulo longitud auto = auto {
@@ -180,6 +190,15 @@ curvaTranca = curva 110 550
 
 -- Modelo de Recta
 
+--Desgaste del auto que paso un rectoClassic
+desgasteDelAutoEnRectoClassic :: Auto -> Desgaste
+desgasteDelAutoEnRectoClassic = desgaste . tramoRectoClassic 
+
+--Desgaste del auto que paso un tramito
+desgasteDelAutoEnTramito :: Auto -> Desgaste
+desgasteDelAutoEnTramito = desgaste . tramito 
+
+
 recta :: Number -> Tramo
 recta longitud auto = auto {
   desgaste = (desgaste auto) {
@@ -200,6 +219,14 @@ tramito :: Tramo
 tramito = recta 260
 
 -- Modelo Zig Zag
+--Desgaste del auto que paso un zigZagLoco
+desgasteDelAutoEnZigZagLoco :: Auto -> Desgaste
+desgasteDelAutoEnZigZagLoco = desgaste . zigZagLoco 
+
+--Desgaste del auto que paso un casiCurva
+desgasteDelAutoEnCasiCurva :: Auto -> Desgaste
+desgasteDelAutoEnCasiCurva = desgaste . casiCurva 
+
 
 zigzag :: Number -> Tramo
 zigzag cambios auto = auto {
@@ -222,6 +249,14 @@ casiCurva :: Tramo
 casiCurva = zigzag 1
 
 -- Modelo Rulo
+
+--Desgaste del auto que paso un ruloClasico
+desgasteDelAutoEnRuloClasico :: Auto -> Desgaste
+desgasteDelAutoEnRuloClasico = desgaste . ruloClasico 
+
+--Desgaste del auto que paso un deseoDeMuerte
+desgasteDelAutoEnDeseoDeMuerte :: Auto -> Desgaste
+desgasteDelAutoEnDeseoDeMuerte = desgaste . deseoDeMuerte 
 
 rulo :: Number -> Tramo
 rulo diametro auto = auto {

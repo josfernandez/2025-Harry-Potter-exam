@@ -140,83 +140,76 @@ correrTests = hspec $ do
      (modelo . llevarAutoADesarmadero "Tesla" "X") fiat `shouldBe` "X"
      (apodo . llevarAutoADesarmadero "Tesla" "X") fiat `shouldBe` ["Nunca Taxi"]
 
-{-
--- Test 4) Pistas
 
+-- Test 4) Pistas
+  
   --Test a
   describe "Tests de curvas peligrosas:" $ do
-    it "Transitar una curva peligrosa  con un auto marca Ferrari" $ do
-      (desgasteRueda . desgaste . desgasteDelAutoEnCurva ferrari) curvaPeligrosa `shouldBe` 15
+    it "Desgaste de la rueda de un auto en una curva peligrosa" $ do
+     (desgasteRueda . desgasteDelAutoEnCurvaPeligrosa) ferrari `shouldBe` 15
+    it "Desgaste del chasis de un auto en una curva peligrosa" $ do
+      (desgasteChasis . desgasteDelAutoEnCurvaPeligrosa) ferrari `shouldBe` 0
+    it "Tiempo de pista de un auto en una curva peligrosa" $ do
+      tiempoCarrera (curvaPeligrosa peugeot)  `shouldBe` 15
 
-    it "Transitar una curva peligrosa  con un auto marca Ferrari" $ do
-      (desgasteChasis . desgaste . desgasteDelAutoEnCurva ferrari) curvaPeligrosa `shouldBe` 0
+    it "Desgaste de la rueda de un auto en una curva tranca" $ do
+      (desgasteRueda . desgasteDelAutoEnCurvaTranca) ferrari `shouldBe` 15
+    it "Desgaste del chasis de un auto en una curva tranca" $ do
+      (desgasteChasis . desgasteDelAutoEnCurvaTranca) ferrari `shouldBe` 0
+    it "Tiempo de pista de un auto en una curva tranca" $ do
+      tiempoCarrera (curvaTranca peugeot) `shouldBe` 27.5
 
-    it "Transitar una curva peligrosa  con un auto marca peouget" $ do
-      tiempoDelAutoEncurva peugeot curvaPeligrosa `shouldBe` 15
-
-    it "Transitar una curva tranca  con un auto marca Ferrari" $ do
-      (desgasteRueda . desgaste . desgasteDelAutoEnCurva ferrari) curvaTranca `shouldBe` 15
-
-    it "Transitar una curva tranca  con un auto marca Ferrari" $ do
-      (desgasteChasis . desgaste . desgasteDelAutoEnCurva ferrari) curvaTranca `shouldBe` 0
-    
-    it "Transitar una curva tranca  con un auto marca peouget" $ do
-      tiempoDelAutoEncurva peugeot curvaTranca `shouldBe` 27.5
-
-  --Test b
+ --Test b
   describe "Tests de rectas:" $ do
-    it "Transitar un RetroClassic  con un auto marca Ferrari" $ do
-      (desgasteChasis . desgaste . desgasteDelAutoEnRecto ferrari) tramoRectoClassic `shouldBe` 7.15
-    
-    it "Transitar una RetroClassic con un auto marca Ferrari" $ do
-      tiempoDelAutoEnRecto ferrari tramoRectoClassic `shouldBe` 11
-
-    it "Transitar un Tramito con un auto marca Ferrari" $ do
-      (desgasteChasis . desgaste . desgasteDelAutoEnRecto ferrari) tramito `shouldBe` 2.6
-    
-    it "Transitar una Tramito con un auto marca Ferrari" $ do
-      tiempoDelAutoEnRecto ferrari tramito `shouldBe` 4
+    it "Desgaste del chasis de un auto en un RetroClassic" $ do
+      (desgasteChasis . desgasteDelAutoEnRectoClassic) ferrari `shouldBe` 7.15
+    it "Tiempo de pista de un auto en un RetroClassic" $ do
+      tiempoCarrera (tramoRectoClassic ferrari) `shouldBe` 11
+    it "Desgaste del chasis de un auto en un Tramito" $ do
+      (desgasteChasis . desgasteDelAutoEnTramito) ferrari `shouldBe` 2.6
+    it "Tiempo de pista de un auto en un Tramito" $ do
+      tiempoCarrera (tramito ferrari) `shouldBe` 4
 
   --Test c
   describe "Tests de zigZagLoco :" $ do
-    it "Desgaste del chasis en un zigZagLoco con un auto marca Ferrari" $ do
-      (desgasteChasis . desgaste . desgasteDelAutoEnZigZag ferrari) zigZagLoco `shouldBe` 5
+    it "Desgaste del chasis de un auto en un zigZagLoco" $ do
+      (desgasteChasis . desgasteDelAutoEnZigZagLoco) ferrari `shouldBe` 5
     
-    it "Desgaste del ruedas en  zigZagLoco con un auto marca Ferrari" $ do
-      (desgasteRueda . desgaste . desgasteDelAutoEnZigZag ferrari) zigZagLoco `shouldBe` 32.5
+    it "Desgaste del ruedas de un auto en zigZagLoco" $ do
+      (desgasteRueda . desgasteDelAutoEnZigZagLoco) ferrari `shouldBe` 32.5
     
-    it "El tiempo en pista en zigZagLoco con un auto marca Ferrari" $ do
-      tiempoDelAutoEnZigZag ferrari zigZagLoco `shouldBe` 15
+    it "Tiempo de pista de un auto en un zigZagLoco" $ do
+      tiempoCarrera (zigZagLoco ferrari)  `shouldBe` 15
     
-    it "Desgaste del chasis en un casiCurva con un auto marca Ferrari" $ do
-      (desgasteChasis . desgaste . desgasteDelAutoEnZigZag ferrari) casiCurva `shouldBe` 5
+    it "Desgaste del chasis de un auto en una casiCurva" $ do
+      (desgasteChasis . desgasteDelAutoEnCasiCurva) ferrari `shouldBe` 5
     
-    it "Desgaste de ruedas en  casiCurva con un auto marca Ferrari" $ do
-      (desgasteRueda . desgaste . desgasteDelAutoEnZigZag ferrari) casiCurva `shouldBe` 6.5
+    it "Desgaste del ruedas de un auto en una casiCurva" $ do
+      (desgasteRueda . desgasteDelAutoEnCasiCurva) ferrari `shouldBe` 6.5
     
-    it "El tiempo en pista en casiCurva con un auto marca Ferrari" $ do
-      tiempoDelAutoEnZigZag ferrari casiCurva `shouldBe` 3
-  
+    it "Tiempo de pista de un auto en un casiCurva" $ do
+      tiempoCarrera (casiCurva ferrari ) `shouldBe` 3
+ 
   --Test d    
   describe "Tests de Rulo :" $ do
-    it "Desgaste del chasis en un ruloClasico con un auto marca Ferrari" $ do
-      (desgasteChasis . desgaste . desgasteDelAutoEnRulo ferrari) ruloClasico `shouldBe` 0
+    it "Desgaste del chasis de un auto en un ruloClasico" $ do
+      (desgasteChasis . desgasteDelAutoEnRuloClasico) ferrari `shouldBe` 0
     
-    it "Desgaste de ruedas en  ruloClasico con un auto marca Ferrari" $ do
-      (desgasteRueda . desgaste . desgasteDelAutoEnRulo ferrari) ruloClasico `shouldBe` 19.5
+    it "Desgaste de ruedas de un auto en un ruloClasico" $ do
+      (desgasteRueda . desgasteDelAutoEnRuloClasico) ferrari `shouldBe` 19.5
     
-    it "El tiempo en pista en ruloClasico con un auto marca Ferrari" $ do
-      tiempoDelAutoEnRulo ferrari ruloClasico `shouldBe` 1
+    it "Tiempo de pista de un auto en un ruloClasico" $ do
+      tiempoCarrera (ruloClasico ferrari)  `shouldBe` 1
     
-    it "Desgaste del chasis en un deseoDeMuerte con un auto marca Ferrari" $ do
-      (desgasteChasis . desgaste . desgasteDelAutoEnRulo ferrari) deseoDeMuerte `shouldBe` 0
+    it "Desgaste del chasis de un auto en un deseoDeMuerte  " $ do
+      (desgasteChasis . desgasteDelAutoEnDeseoDeMuerte) ferrari `shouldBe` 0
     
-    it "Desgaste de ruedas en  deseoDeMuerte con un auto marca Ferrari" $ do
-      (desgasteRueda . desgaste . desgasteDelAutoEnRulo ferrari) deseoDeMuerte `shouldBe` 39
+    it "Desgaste de ruedas de un auto en un deseoDeMuerte" $ do
+      (desgasteRueda . desgasteDelAutoEnDeseoDeMuerte) ferrari `shouldBe` 39
     
-    it "El tiempo en pista en deseoDeMuerte con un auto marca Ferrari" $ do
-      tiempoDelAutoEnRulo ferrari deseoDeMuerte `shouldBe` 2
--}
+    it "Tiempo de pista de un auto en un deseoDeMuerte" $ do
+      tiempoCarrera (deseoDeMuerte ferrari)  `shouldBe` 2  
+
 -- Test 5) Nivel de Joyez
 
   describe "Tests de nivel de joyez :" $ do
