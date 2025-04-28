@@ -3,17 +3,14 @@ import PdePreludat
 import Library
 import Test.Hspec
 
-ferrari2 :: Auto
-ferrari2 = Auto "Ferrari" "F50" (Desgaste 0 0) 49 0 ["La nave","El fierro","Ferrucho"]
+peugeotTiempo49 :: Auto
+peugeotTiempo49 = Auto "Peugeot" "504" (Desgaste 0 0) 49 0 ["La Bocha","La bolita","El rey del desierto"] 
 
-peugeot2 :: Auto
-peugeot2 = Auto "Peugeot" "504" (Desgaste 0 0) 49 0 ["La Bocha","La bolita","El rey del desierto"] 
-
-peugeot3 :: Auto
-peugeot3 = Auto "Peugeot" "504" (Desgaste 0 0) 50 0 ["La Bocha","La bolita","El rey del desierto"] 
+peugeotTiempo50 :: Auto
+peugeotTiempo50 = Auto "Peugeot" "504" (Desgaste 0 0) 50 0 ["La Bocha","La bolita","El rey del desierto"] 
 
 autos :: [Auto]
-autos = [peugeot3, peugeot2, ferrari2]
+autos = [peugeotTiempo50, peugeotTiempo49, ferrari]
 
 -- TEST de nivel de Joyes
 ferrariTiempo201 :: Auto
@@ -217,13 +214,13 @@ correrTests = hspec $ do
       nivelDeJoyez autos `shouldBe` 3
 
   describe "Tests de paraEntendidos :" $ do
-    it "Probamos el para entendidos con ferraris " $ do
+    it "Probamos el para entendidos de un auto con mucho tiempo de carrera " $ do
       paraEntendidos ferraris `shouldBe` False
 
-    it "Probamos el para entendidos con ferrari y peugeot" $ do
+    it "Probamos el para entendidos con 2 autos, uno que no esta en buen estado" $ do
       paraEntendidos ferrariPeugeot `shouldBe` False
 
-    it "Probamos el para entendidos en ferrari y lamborghini " $ do
+    it "Probamos el para entendidos con 2 autos que estan en buen estado y con poco tiempo de carrera " $ do
       paraEntendidos ferrariLambo `shouldBe` True
     
 
