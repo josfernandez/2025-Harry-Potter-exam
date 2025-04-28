@@ -158,14 +158,6 @@ type Tramo = Auto -> Auto -- recibo un auto y al pasar por el tramo, modifica al
 
 -- Modelo de Curva
 
---Desgaste del auto que paso una CurvaPeligrosa
-desgasteDelAutoEnCurvaPeligrosa :: Auto -> Desgaste
-desgasteDelAutoEnCurvaPeligrosa = desgaste . curvaPeligrosa
-
---Desgaste del auto que paso una CurvaTranca
-desgasteDelAutoEnCurvaTranca :: Auto -> Desgaste
-desgasteDelAutoEnCurvaTranca = desgaste . curvaTranca
-
 curva :: Number -> Number -> Tramo
 curva angulo longitud auto = auto {
   desgaste = (desgaste auto) {
@@ -180,6 +172,14 @@ desgasteRuedaEnCurva longitud angulo = 3 * longitud / angulo
 aumentoTiempoEnCurva :: Number -> Auto -> Number
 aumentoTiempoEnCurva longitud auto = longitud / (velocidadMaxima auto / 2)
 
+--Desgaste del auto que paso una CurvaPeligrosa
+desgasteDelAutoEnCurvaPeligrosa :: Auto -> Desgaste
+desgasteDelAutoEnCurvaPeligrosa = desgaste . curvaPeligrosa
+
+--Desgaste del auto que paso una CurvaTranca
+desgasteDelAutoEnCurvaTranca :: Auto -> Desgaste
+desgasteDelAutoEnCurvaTranca = desgaste . curvaTranca
+
 -- Modelo particularidades de curvas solicitadas
 
 curvaPeligrosa :: Tramo
@@ -189,15 +189,6 @@ curvaTranca :: Tramo
 curvaTranca = curva 110 550
 
 -- Modelo de Recta
-
---Desgaste del auto que paso un rectoClassic
-desgasteDelAutoEnRectoClassic :: Auto -> Desgaste
-desgasteDelAutoEnRectoClassic = desgaste . tramoRectoClassic 
-
---Desgaste del auto que paso un tramito
-desgasteDelAutoEnTramito :: Auto -> Desgaste
-desgasteDelAutoEnTramito = desgaste . tramito 
-
 
 recta :: Number -> Tramo
 recta longitud auto = auto {
@@ -210,6 +201,14 @@ recta longitud auto = auto {
 aumentoTiempoEnRecta :: Number -> Auto -> Number
 aumentoTiempoEnRecta longitud auto = longitud / velocidadMaxima auto
 
+--Desgaste del auto que paso un rectoClassic
+desgasteDelAutoEnRectoClassic :: Auto -> Desgaste
+desgasteDelAutoEnRectoClassic = desgaste . tramoRectoClassic 
+
+--Desgaste del auto que paso un tramito
+desgasteDelAutoEnTramito :: Auto -> Desgaste
+desgasteDelAutoEnTramito = desgaste . tramito 
+
 -- Modelo particularidades de rectas solicitadas
 
 tramoRectoClassic :: Tramo
@@ -219,14 +218,6 @@ tramito :: Tramo
 tramito = recta 260
 
 -- Modelo Zig Zag
---Desgaste del auto que paso un zigZagLoco
-desgasteDelAutoEnZigZagLoco :: Auto -> Desgaste
-desgasteDelAutoEnZigZagLoco = desgaste . zigZagLoco 
-
---Desgaste del auto que paso un casiCurva
-desgasteDelAutoEnCasiCurva :: Auto -> Desgaste
-desgasteDelAutoEnCasiCurva = desgaste . casiCurva 
-
 
 zigzag :: Number -> Tramo
 zigzag cambios auto = auto {
@@ -240,6 +231,15 @@ zigzag cambios auto = auto {
 desgasteRuedaZigZag :: Number -> Auto -> Number
 desgasteRuedaZigZag cambios auto = (velocidadMaxima auto * cambios / 10)
 
+--Desgaste del auto que paso un zigZagLoco
+desgasteDelAutoEnZigZagLoco :: Auto -> Desgaste
+desgasteDelAutoEnZigZagLoco = desgaste . zigZagLoco 
+
+--Desgaste del auto que paso un casiCurva
+desgasteDelAutoEnCasiCurva :: Auto -> Desgaste
+desgasteDelAutoEnCasiCurva = desgaste . casiCurva 
+
+
 -- Modelo particularidades de ZigZag solicitadas
 
 zigZagLoco :: Tramo
@@ -249,14 +249,6 @@ casiCurva :: Tramo
 casiCurva = zigzag 1
 
 -- Modelo Rulo
-
---Desgaste del auto que paso un ruloClasico
-desgasteDelAutoEnRuloClasico :: Auto -> Desgaste
-desgasteDelAutoEnRuloClasico = desgaste . ruloClasico 
-
---Desgaste del auto que paso un deseoDeMuerte
-desgasteDelAutoEnDeseoDeMuerte :: Auto -> Desgaste
-desgasteDelAutoEnDeseoDeMuerte = desgaste . deseoDeMuerte 
 
 rulo :: Number -> Tramo
 rulo diametro auto = auto {
@@ -269,6 +261,14 @@ rulo diametro auto = auto {
 aumentaTiempoEnRulo :: Number -> Auto -> Number 
 aumentaTiempoEnRulo diametro auto = (5 * diametro) / velocidadMaxima auto
 
+--Desgaste del auto que paso un ruloClasico
+desgasteDelAutoEnRuloClasico :: Auto -> Desgaste
+desgasteDelAutoEnRuloClasico = desgaste . ruloClasico 
+
+--Desgaste del auto que paso un deseoDeMuerte
+desgasteDelAutoEnDeseoDeMuerte :: Auto -> Desgaste
+desgasteDelAutoEnDeseoDeMuerte = desgaste . deseoDeMuerte 
+
 -- Modelo particularidades de Rulos solicitados
 
 ruloClasico :: Tramo
@@ -276,6 +276,7 @@ ruloClasico = rulo 13
 
 deseoDeMuerte :: Tramo
 deseoDeMuerte = rulo 26
+
 
 -- 5. Nivel de Joyez
 
