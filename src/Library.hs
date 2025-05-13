@@ -298,3 +298,58 @@ paraEntendidos = all cumpleCondicionEntendido
 
 cumpleCondicionEntendido :: Auto -> Bool
 cumpleCondicionEntendido auto = tiempoCarrera auto <= 200 && enBuenEstado auto
+
+-- PARTE 2
+
+-- 2.1 Equipos de Competicion
+
+data Equipo = Equipo {
+    nombreEquipo :: String,
+    conjuntoAutosEquipo :: [Auto],
+    presupuesto :: Number
+} deriving (Show, Eq)
+
+--2.1.a. Agregar autos a equipos
+
+losMasRapidos :: Equipo 
+losMasRapidos = Equipo "losMasRapidos" [] 70000
+
+agregarAutoEquipo :: Auto -> Equipo -> Equipo
+agregarAutoEquipo auto equipo
+  | calcularCostoAuto auto <= presupuesto equipo = Equipo {
+      nombreEquipo = nombreEquipo equipo,
+      conjuntoAutosEquipo = auto : conjuntoAutosEquipo equipo, -- agrega el nuevo auto al inicio de la lista
+      presupuesto = presupuesto equipo - calcularCostoAuto auto
+    }
+  | otherwise = equipo
+
+calcularCostoAuto :: Auto -> Number
+calcularCostoAuto auto = velocidadMaxima auto * 1000 
+
+-- 2.1.b. Realizar una Reparacion
+
+{-
+USO LA FUNCION YA CREADA
+repararAuto :: Auto -> Auto
+repararAuto auto = auto { desgasteDeChasisAuto = desgasteDeChasisAuto auto * 0.15 }
+-}
+
+repararEquipo :: Equipo -> Equipo
+repararEquipo equipo = equipo {
+  conjuntoAutosEquipo = autosReparados (conjuntoAutosEquipo equipo) (presupuesto equipo),
+  presupuesto = presupuestoRestante (conjuntoAutosEquipo equipo) (presupuesto equipo)
+}
+
+autosReparados :: [Auto] -> Number -> [Auto]
+autosReparados (a:as) p
+  | calcularCostoReparacion a <= p = repararAuto a : autosReparados as (p - calcularCostoReparacion a)
+  | otherwise = a : autosReparados as p
+
+presupuestoRestante :: [Auto] -> Number -> Number
+presupuestoRestante [] p = p
+presupuestoRestante (a:as) p
+  | calcularCostoReparacion a <= p = presupuestoRestante as (p - calcularCostoReparacion a)
+  | otherwise = presupuestoRestante as p
+
+calcularCostoReparacion :: Auto -> Number
+calcularCostoReparacion auto = (desgasteDeChasisAuto auto - desgasteDeChasisAuto auto * 0.15) * 500
