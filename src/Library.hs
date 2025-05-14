@@ -1,5 +1,7 @@
 module Library where
 import PdePreludat
+import GHC.Num (Num)
+import qualified Data.Foldable as 2.2
 
 doble :: Number -> Number
 doble numero = numero + numero
@@ -301,6 +303,16 @@ cumpleCondicionEntendido auto = tiempoCarrera auto <= 200 && enBuenEstado auto
 
 -- PARTE 2
 
+--Funciones utils
+-- Se utiliza como funcion base para calcular el presupesto restante de todas las modificaicones
+presupuestoRestante :: (Auto -> Number) -> [Auto] -> Number   -> Number
+presupuestoRestante calcularCosto [] p  = p
+presupuestoRestante calcularCosto (a:as) p 
+  | calcularCosto a <= p = presupuestoRestante calcularCosto as (p - calcularCosto a) 
+  | otherwise = presupuestoRestante calcularCosto as p 
+
+
+
 -- 2.1 Equipos de Competicion
 
 data Equipo = Equipo {
@@ -337,19 +349,78 @@ repararAuto auto = auto { desgasteDeChasisAuto = desgasteDeChasisAuto auto * 0.1
 repararEquipo :: Equipo -> Equipo
 repararEquipo equipo = equipo {
   conjuntoAutosEquipo = autosReparados (conjuntoAutosEquipo equipo) (presupuesto equipo),
-  presupuesto = presupuestoRestante (conjuntoAutosEquipo equipo) (presupuesto equipo)
+  presupuesto = presupuestoRestanteDeReparacion (conjuntoAutosEquipo equipo) (presupuesto equipo) 
 }
+
 
 autosReparados :: [Auto] -> Number -> [Auto]
 autosReparados (a:as) p
   | calcularCostoReparacion a <= p = repararAuto a : autosReparados as (p - calcularCostoReparacion a)
   | otherwise = a : autosReparados as p
 
-presupuestoRestante :: [Auto] -> Number -> Number
-presupuestoRestante [] p = p
-presupuestoRestante (a:as) p
-  | calcularCostoReparacion a <= p = presupuestoRestante as (p - calcularCostoReparacion a)
-  | otherwise = presupuestoRestante as p
+
+--Presupuesto Restante de la reparacion
+presupuestoRestanteDeReparacion :: [Auto] -> Number -> Number
+presupuestoRestanteDeReparacion = presupuestoRestante calcularCostoReparacion
 
 calcularCostoReparacion :: Auto -> Number
 calcularCostoReparacion auto = (desgasteDeChasisAuto auto - desgasteDeChasisAuto auto * 0.15) * 500
+
+
+-- 2.1.c. Optimizar autos 
+
+ponerNitroEquipo :: Equipo -> Equipo
+ponerNitroEquipo equipo = equipo {
+  conjuntoAutosEquipo = ponerNitroAutos equipo,
+  presupuesto = presupuestoRestanteNitro (conjuntoAutosEquipo equipo) (presupuesto equipo)
+}
+
+ponerNitroAutos:: Equipo -> [Auto]
+ponerNitroAutos equipo = autosConNitro (conjuntoAutosEquipo equipo) (presupuesto equipo)
+
+autosConNitro :: [Auto] -> Number -> [Auto]
+autosConNitro (auto:autos) presupuesto
+  | gastoEnNitro auto <= presupuesto = ponerleNitro auto : autosConNitro autos (presupuesto - gastoEnNitro auto)
+  | otherwise = auto : autosConNitro autos presupuesto
+
+--Presupuesto Restante de poner el nitro
+presupuestoRestanteNitro :: [Auto] -> Number -> Number
+presupuestoRestanteNitro = presupuestoRestante gastoEnNitro
+
+gastoEnNitro :: Auto -> Number
+gastoEnNitro auto = velocidadMaxima auto * 100
+
+
+-- 2.1.d. Ferrarizar
+
+ferrarizar :: Equipo -> Equipo
+ferrarizar equipo = equipo {
+  conjuntoAutosEquipo = cambiarPorFerraris (conjuntoAutosEquipo equipo) (presupuesto equipo),
+  presupuesto = presupuestoRestanteFerrarizacion (conjuntoAutosEquipo equipo) (presupuesto equipo)
+}
+
+cambiarPorFerraris :: [Auto] -> Number -> [Auto]
+cambiarPorFerraris (auto:autos) presupuesto
+  | gastoDeFerrarizacion auto <= presupuesto = convertirloAFerrari auto : cambiarPorFerraris autos (presupuesto - gastoDeFerrarizacion auto)
+  | otherwise = auto : cambiarPorFerraris autos presupuesto
+
+convertirloAFerrari :: Auto -> Auto
+convertirloAFerrari = llevarAutoADesarmadero "Ferrari" "F40" 
+
+--Presupuesto Restante de poner el nitro
+presupuestoRestanteFerrarizacion :: [Auto] -> Number -> Number
+presupuestoRestanteFerrarizacion = presupuestoRestante gastoDeFerrarizacion
+
+gastoDeFerrarizacion:: Auto -> Number
+gastoDeFerrarizacion auto 
+  | marca auto == "Ferrari" = 0
+  | otherwise = 3500
+
+
+--2.2 Funcione Utils
+costoTotal :: ([Auto] -> Number -> Number) -> Equipo -> Number
+costoTotal presupuestoRestante equipo = presupuesto equipo - presupuestoRestante (conjuntoAutosEquipo equipo) (presupuesto equipo)
+
+--2.2.a Total costo de reparacion
+costoTotalReparacion :: Equipo -> Number
+costoTotalReparacion  = costoTotal presupuestoRestanteDeReparacion 
