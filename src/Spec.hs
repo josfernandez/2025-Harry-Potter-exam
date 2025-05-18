@@ -56,7 +56,17 @@ equipoPobre = Equipo "fiat" [fiatc50] 10000
 
 equipoItaloFrances :: Equipo
 equipoItaloFrances = Equipo "Italo Frances" [fiatc50,peugeotTiempo49] 100000
- 
+
+
+equipoPeLa :: Equipo
+equipoPeLa = Equipo "FERRARIÑO" [peugeotTiempo49,lamboc20] 20000
+
+equipoFP :: Equipo
+equipoFP = Equipo "FERRARI GUIÑO GUIÑO" [peugeotTiempo49,lamboc20] 4000
+
+equipoPeLaFe :: Equipo
+equipoPeLaFe = Equipo "Felali" [peugeotTiempo49,ferrari65k,lamboc20] 20000
+
 correrTests :: IO ()
 
 correrTests = hspec $ do
@@ -274,24 +284,31 @@ correrTests = hspec $ do
       velocidadMaxima (conjuntoAutosEquipo (ponerNitroEquipo equipoConPresupuestoRecortado) !! 0) `shouldBe` 78
       velocidadMaxima (conjuntoAutosEquipo (ponerNitroEquipo equipoConPresupuestoRecortado) !! 1) `shouldBe` 73
       presupuesto (ponerNitroEquipo equipoConPresupuestoRecortado) `shouldBe` 3500
-            
-   --esta no la piden. it "Poner nitro a equipo sin suficiente presupuesto para ningun auto"
+           
+   --esta no la piden. it Poner nitro a equipo sin suficiente presupuesto para ningun auto
 
-{-}
-   describe "Tests para ferrarizar equipo:" $ do
+  describe "Tests para ferrarizar equipo:" $ do
     it "Ferrarizar equipo con presupuesto para todos los autos" $ do
-      buscarAuto ferrari65k (agregarAutoEquipo ferrari65k losMasRapidos)velocidadMaxima (
-      ferrarizar ( conjuntoAutosEquipo (ponerNitroEquipo equipoConPresupuesto) !! 0) `shouldBe` 78
-      ferrarizar ( conjuntoAutosEquipo (ponerNitroEquipo equipoConPresupuesto) !! 0) `shouldBe` 78
-      velocidadMaxima (conjuntoAutosEquipo (ponerNitroEquipo equipoConPresupuesto) !! 1) `shouldBe` 87.6
-      presupuesto (ponerNitroEquipo equipoConPresupuesto) `shouldBe` 3500  
+      marca ((conjuntoAutosEquipo (ferrarizar equipoPeLa)) !! 0) `shouldBe` "Ferrari"
+      modelo ((conjuntoAutosEquipo (ferrarizar equipoPeLa)) !! 0) `shouldBe` "F50"
+      marca ((conjuntoAutosEquipo (ferrarizar equipoPeLa)) !! 1) `shouldBe` "Ferrari"
+      modelo ((conjuntoAutosEquipo (ferrarizar equipoPeLa)) !! 1) `shouldBe` "F50"
+      presupuesto (ferrarizar equipoPeLa) `shouldBe` 13000
     it "Ferrarizar equipo con presupuesto para algunos autos (parcialmente)" $ do
-      velocidadMaxima (conjuntoAutosEquipo (ponerNitroEquipo equipoConPresupuestoRecortado) !! 0) `shouldBe` 78
-      velocidadMaxima (conjuntoAutosEquipo (ponerNitroEquipo equipoConPresupuestoRecortado) !! 1) `shouldBe` 87.6
-      presupuesto (ponerNitroEquipo equipoConPresupuestoRecortado) `shouldBe` 3500
-    
+      marca ((conjuntoAutosEquipo (ferrarizar equipoFP)) !! 0) `shouldBe` "Ferrari"
+      modelo ((conjuntoAutosEquipo (ferrarizar equipoFP)) !! 0) `shouldBe` "F50"
+      marca ((conjuntoAutosEquipo (ferrarizar equipoFP)) !! 1) `shouldBe` "Lambo"
+      presupuesto (ferrarizar equipoFP) `shouldBe` 500
+      marca ((conjuntoAutosEquipo (ferrarizar equipoPeLaFe)) !! 0) `shouldBe` "Ferrari"
+      modelo ((conjuntoAutosEquipo (ferrarizar equipoPeLaFe)) !! 0) `shouldBe` "F50"
+      marca ((conjuntoAutosEquipo (ferrarizar equipoPeLaFe)) !! 1) `shouldBe` "Ferrari"
+      modelo ((conjuntoAutosEquipo (ferrarizar equipoPeLaFe)) !! 1) `shouldBe` "F50"
+      marca ((conjuntoAutosEquipo (ferrarizar equipoPeLaFe)) !! 2) `shouldBe` "Ferrari"
+      modelo ((conjuntoAutosEquipo (ferrarizar equipoPeLaFe)) !! 2) `shouldBe` "F50"
+      presupuesto (ferrarizar equipoPeLaFe) `shouldBe` 13000
+      
+
     -- no la piden it "Ferrarizar equipo sin presupuesto para ningun auto" $ do
--}
 
   describe "Tests para costear reparacion de equipo:" $ do
     it "Calcular costo de raparacion de equipo completo" $ do

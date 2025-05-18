@@ -422,7 +422,7 @@ cambiarPorFerraris (auto:autos) presupuesto
   | otherwise = auto : cambiarPorFerraris autos presupuesto
 
 convertirloAFerrari :: Auto -> Auto
-convertirloAFerrari = llevarAutoADesarmadero "Ferrari" "F40" 
+convertirloAFerrari = llevarAutoADesarmadero "Ferrari" "F50" 
 
 --Presupuesto Restante de poner el nitro
 presupuestoRestanteFerrarizacion :: [Auto] -> Number -> Number
