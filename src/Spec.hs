@@ -52,7 +52,7 @@ equipoConPresupuestoRecortado :: Equipo
 equipoConPresupuestoRecortado = Equipo "ferrari lambo" [ferraric10, lamboc20] 10000
 
 equipoPobre :: Equipo
-equipoPobre = Equipo "fiat" [fiat] 10000
+equipoPobre = Equipo "fiat" [fiatc50] 10000
 
 equipoItaloFrances :: Equipo
 equipoItaloFrances = Equipo "Italo Frances" [fiatc50,peugeotTiempo49] 100000
