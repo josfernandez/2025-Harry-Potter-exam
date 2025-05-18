@@ -1,7 +1,7 @@
 module Library where
 import PdePreludat
 import GHC.Num (Num)
-import qualified Data.Foldable as 2.2
+--import qualified Data.Foldable as 2.2
 
 doble :: Number -> Number
 doble numero = numero + numero
@@ -326,6 +326,20 @@ data Equipo = Equipo {
 losMasRapidos :: Equipo 
 losMasRapidos = Equipo "losMasRapidos" [] 70000
 
+--equipos y autos de prueba
+ferraric10p20 = Auto "Ferrari" "F40" (Desgaste 10 0) 65 0 []
+lamboc20p20 = Auto "Lambo" "sv" (Desgaste 20 0) 73 0 []
+fiatc50p10 = Auto "Fiat" "argos" (Desgaste 50 0) 50 0 []
+
+noTanRapidos :: Equipo
+noTanRapidos = Equipo "Tortugas" [ferraric10p20,lamboc20p20] 20000
+
+fanFiat :: Equipo
+fanFiat = Equipo "FIATCHINI" [fiatc50p10] 10000
+
+
+--equipos y autos de prueba
+
 agregarAutoEquipo :: Auto -> Equipo -> Equipo
 agregarAutoEquipo auto equipo
   | calcularCostoAuto auto <= presupuesto equipo = Equipo {
@@ -354,6 +368,7 @@ repararEquipo equipo = equipo {
 
 
 autosReparados :: [Auto] -> Number -> [Auto]
+autosReparados [] _ = [] -- caso base que faltaba
 autosReparados (a:as) p
   | calcularCostoReparacion a <= p = repararAuto a : autosReparados as (p - calcularCostoReparacion a)
   | otherwise = a : autosReparados as p
@@ -379,6 +394,7 @@ ponerNitroAutos:: Equipo -> [Auto]
 ponerNitroAutos equipo = autosConNitro (conjuntoAutosEquipo equipo) (presupuesto equipo)
 
 autosConNitro :: [Auto] -> Number -> [Auto]
+autosConNitro [] _ = []   -- caso base que faltaba
 autosConNitro (auto:autos) presupuesto
   | gastoEnNitro auto <= presupuesto = ponerleNitro auto : autosConNitro autos (presupuesto - gastoEnNitro auto)
   | otherwise = auto : autosConNitro autos presupuesto
@@ -400,6 +416,7 @@ ferrarizar equipo = equipo {
 }
 
 cambiarPorFerraris :: [Auto] -> Number -> [Auto]
+cambiarPorFerraris [] _ = []  -- caso base faltante
 cambiarPorFerraris (auto:autos) presupuesto
   | gastoDeFerrarizacion auto <= presupuesto = convertirloAFerrari auto : cambiarPorFerraris autos (presupuesto - gastoDeFerrarizacion auto)
   | otherwise = auto : cambiarPorFerraris autos presupuesto
@@ -424,3 +441,46 @@ costoTotal presupuestoRestante equipo = presupuesto equipo - presupuestoRestante
 --2.2.a Total costo de reparacion
 costoTotalReparacion :: Equipo -> Number
 costoTotalReparacion  = costoTotal presupuestoRestanteDeReparacion 
+
+--funciones para testing
+buscarAuto :: Auto -> Equipo -> Bool
+buscarAuto auto equipo = auto `elem` (conjuntoAutosEquipo equipo)
+
+--Punto 3
+--a
+ferrariBase :: Auto
+ferrariBase = Auto "Ferrari" "F40" (Desgaste 1 0) 300 0 []
+
+infinia :: Equipo
+infinia = Equipo "Infinia" autosInfinia 5000
+
+autosInfinia :: [Auto]
+autosInfinia = autosConVelocidad 1 (Auto "Ferrari" "F40" (Desgaste 1 0) 300 0 [])
+
+autosConVelocidad :: Number -> Auto -> [Auto]
+autosConVelocidad multiplicador base =
+  base { velocidadMaxima = velocidadMaxima base * multiplicador } : autosConVelocidad (multiplicador + 1) base
+
+--funcion extra punto 3
+recortarEquiposInfinitos :: Number -> Equipo -> Equipo
+recortarEquiposInfinitos corte equipo = equipo { conjuntoAutosEquipo = take corte (conjuntoAutosEquipo equipo) }
+
+--b
+{-si se realiza una reparacion de este equipo, al tener una lista infinita, va a intentar evaluar la lista completa
+y nunca terminara
+-}
+{- pasaria lo mismo que en el punto anterior, quedaria tratando de calcular la lista completa para despues ponerles nitro
+-}
+{- pasaria lo mismo que en los dos puntos anteriores, no termina nunca de calcular la lista
+ lo mismo que el punto anterior, no termina de calcular jamas la lista y por ende no ejecuta el resto de la funcion
+-}
+
+{-ALTERNATIVA PARA i,ii,iii,iv
+si quiesieramos reparar todo el equipo, al tener una lista infinita no podemos, pero lo que podemos hacer
+ es pasarle un numero finito, cortar la lista. 
+
+repararEquipo (recortarEquiposInfinitos 5 infinia)
+ponerNitroEquipo (recortarEquiposInfinitos 5 infinia)
+ferrarizar (recortarEquiposInfinitos 5 infinia)
+costoTotalReparacion (recortarEquiposInfinitos 5 infinia)
+-}
