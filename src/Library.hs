@@ -3,64 +3,90 @@ import PdePreludat
 --import GHC.Num (Num)
 --import qualified Data.Foldable as 2.2
 
--- Punto A Modelado de postres
 
+--PUNTO A
 data Postre = Postre {
   sabores :: [String],
   peso :: Number,
-  temperatura :: Number
+  temp :: Number
 } deriving (Show, Eq)
+--FIN PUNTO A
+--PUNTO B
+type Hechizo = Postre -> Postre
 
--- Fin Punto A
--- Punto B Modelar Hechizos
+cambiarPeso :: Number -> Postre -> Postre
+cambiarPeso porcentaje postre = postre {peso=(peso postre)*porcentaje}
 
-type TipoHechizo = Postre -> Postre
+cambiarTemp :: Number -> Postre -> Postre
+cambiarTemp grados postre = postre{temp=(temp postre)+grados}
 
-incendio :: TipoHechizo
-incendio postre = postre {temperatura= (modificarTemp 1 (temperatura postre)), peso= modificarPeso 0.95 (peso postre)}
+agregarSabor :: String -> Postre -> Postre
+agregarSabor sabor postre= postre{sabores=sabor:sabores postre}
 
-modificarTemp :: Number -> Number -> Number -- si quiero subir temperatura sera un number positivo sino sera negativo
-modificarTemp valor temperatura = valor + temperatura
-
-modificarPeso :: Number -> Number -> Number -- si quiero subir 1.xx si quiero bajar 0.xx
-modificarPeso porcentaje peso = porcentaje*peso
-
-inmobulus :: TipoHechizo
-inmobulus postre = postre {temperatura=0}
-
-leviosa :: TipoHechizo
-leviosa postre = postre {sabores = sabores postre ++ ["concentrado"], peso = modificarPeso 0.9 (peso postre)}
-
-diffindo :: Number -> TipoHechizo
-diffindo porcentaje postre = postre {peso= modificarPeso porcentaje (peso postre)}
-
-ridiculus :: String -> TipoHechizo
-ridiculus sabor postre = postre {sabores = sabores postre ++ [(darvuelta sabor)]}
-
-kadavra :: TipoHechizo
-kadavra = borrarSabores.inmobulus
+invertirPostre :: String -> String
+invertirPostre postre = reverse postre 
 
 borrarSabores :: Postre -> Postre
-borrarSabores postre = postre {sabores = []}
+borrarSabores postre= postre{sabores=[]}
 
-darvuelta :: String -> String
-darvuelta cadenaadarvuelta = reverse cadenaadarvuelta
---fin Punto B
---Punto C
---el postre esta listo cuando el peso es mayor a cero, tiene algun sabor, y no esta congelado
+incendio :: Hechizo
+incendio = cambiarPeso (1.05).cambiarTemp (1)
 
-estaListo :: [Postre] -> TipoHechizo -> Bool
-estaListo postres hechizo =  all postreListo (map hechizo postres) 
+immobulus :: Hechizo
+immobulus postre = postre {temp=0}
 
-postreListo :: Postre -> Bool
-postreListo postre = peso postre >0 && not (null (sabores postre)) && temperatura postre /= 0
+wingardium :: Hechizo
+wingardium = cambiarPeso 0.9.agregarSabor "Concentrado"
 
-pesoPromedio :: [Postre] -> Number
-pesoPromedio [] = 0
-pesoPromedio postres = sum (pesoTotal (postres)) / cantPostres (postres)
+diffindo :: Number -> Hechizo
+diffindo porcentaje = cambiarPeso porcentaje
 
-pesoTotal :: [Postre] -> [Number] -- esta funcion me devuelve una lista de los pesos
-pesoTotal postres = map peso postres
+riddikulus :: String -> Hechizo
+riddikulus sabor = agregarSabor (invertirPostre sabor) 
 
-cantPostres :: [Postre] -> Number
-cantPostres postres = length postres
+avada :: Hechizo
+avada = immobulus.borrarSabores
+--FIN PUNTO B
+--PUNTO C
+estaNListos :: [Postre] -> Hechizo -> Bool
+estaNListos postres hechizo = all (estaListo.hechizo) postres
+
+estaListo :: Postre -> Bool
+estaListo postre = peso postre>0 && sabores postre /= [] && temp postre/=0
+--FIN PUNTO C
+--PUNTO D
+--DADO UN CONJUNTO DE POSTRES, CONOCER EL PESO PROMEDIO DE LOS POSTRES LISTOS
+listaPromedio :: [Postre] -> [Number]--me devuelve una lista con los pesos listos
+listaPromedio (primero:resto) 
+                              | estaListo primero = peso primero : listaPromedio resto
+                              | otherwise = listaPromedio resto
+
+pesoPromedio :: [Number] -> Number--toma la lista de pesos listos y calcula el promedio
+pesoPromedio lista = sum lista / length lista
+
+calcularPromedioListo :: [Postre] -> Number
+calcularPromedioListo = pesoPromedio.listaPromedio
+--FIN PUNTO D
+--PARTE 2
+--PUNTO A
+--FUNCION QUE RECIBE MAGO, HECHIZO Y DEVUELVE UN MAGO
+data Mago = Mago {
+  hechizos :: [Hechizo],
+  horrocruxes :: Number
+} deriving (Show, Eq)
+
+entrenarMago :: Mago -> Postre -> Hechizo -> Mago
+entrenarMago mago postre hechizo 
+                                  | (hechizo postre==avada postre) = mago{hechizos=hechizo:hechizos mago,horrocruxes=horrocruxes mago+1}
+                                  | otherwise = mago{hechizos=hechizo:hechizos mago}
+--FIN PUNTO A
+--PUNTO B
+--DADO UN POSTRE UN MAGO, OBTENER EL MEJOR HECHIZO, ES AQUEL QUE DEJA AL POSTRE CON MAS SABORES
+
+mejorPostre :: Postre -> Mago -> Hechizo
+
+mejorHechizo :: [Hechizo] -> Postre -> Hechizo
+mejorHechizo [] _ = []
+mejorHechizo (primero:segundo:resto) postre
+                                            | length (sabores (primero postre))> length (sabores (segundo postre)) = mejorHechizo postre
+
