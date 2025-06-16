@@ -1,5 +1,6 @@
 module Library where
 import PdePreludat
+import Test.Hspec.Discover (postProcessSpec)
 --import GHC.Num (Num)
 --import qualified Data.Foldable as 2.2
 
@@ -83,10 +84,38 @@ entrenarMago mago postre hechizo
 --PUNTO B
 --DADO UN POSTRE UN MAGO, OBTENER EL MEJOR HECHIZO, ES AQUEL QUE DEJA AL POSTRE CON MAS SABORES
 
-mejorPostre :: Postre -> Mago -> Hechizo
+mejorHechizodelMago :: Postre -> Mago -> Hechizo
+mejorHechizodelMago postre mago = mejorHechizo (hechizos mago) postre
 
 mejorHechizo :: [Hechizo] -> Postre -> Hechizo
-mejorHechizo [] _ = []
-mejorHechizo (primero:segundo:resto) postre
-                                            | length (sabores (primero postre))> length (sabores (segundo postre)) = mejorHechizo postre
+mejorHechizo [unico] _ = unico --si la lista tiene un unico hechizo devuelvo ese hechizo unico, o el mejor
+mejorHechizo (primero:segundo:resto) postre 
+                                            | elMejor primero segundo postre = mejorHechizo (primero:resto) postre 
+                                            | otherwise = mejorHechizo (segundo:resto) postre 
+                                            
+elMejor :: Hechizo -> Hechizo -> Postre -> Bool
+elMejor hechizo1 hechizo2 postre 
+                                  | length (sabores (hechizo1 postre))>length (sabores (hechizo2 postre)) = True
+                                  | otherwise = False
+                              
+--FIN PUNTO B
+--PUNTO 3
+--A
 
+postreModelo :: Postre
+postreModelo = Postre {sabores=["Limon"],peso=10,temp=10}
+
+postreInfinito :: [Postre]
+postreInfinito = repeat postreModelo
+
+hechizoInfinito :: [Hechizo]
+hechizoInfinito = repeat incendio
+
+magoModelo :: Mago
+magoModelo = Mago{hechizos=hechizoInfinito,horrocruxes=0}
+--fin punto A
+--B
+--si, esta la funcion estaNListos, la funcion all es lazy evaluation, esto significa que no evalua la lista completa, sino que evalua 
+--hasta encontrar el primer False, una vez que obtiene el primer False, deja de evaluar 
+
+        
