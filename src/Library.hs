@@ -118,4 +118,5 @@ magoModelo = Mago{hechizos=hechizoInfinito,horrocruxes=0}
 --si, esta la funcion estaNListos, la funcion all es lazy evaluation, esto significa que no evalua la lista completa, sino que evalua 
 --hasta encontrar el primer False, una vez que obtiene el primer False, deja de evaluar 
 
-        
+--C no, porque para saber si es el mejor hechizo, tiene que comparar todos los hechizos para quedarse con el mejor.
+-- lo que se puede hacer es recortar (take n hechizos mago) la cantidad de hechizos del mago, haciendo una cantidad finita.
